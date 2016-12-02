@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding=utf-8
 
-from datetime import date
+from datetime import date, datetime
 
 from flask import jsonify, request, g, abort, url_for, current_app
 from . import api
@@ -36,6 +36,12 @@ def modify_the_holiday(id):
         if holiday.apply_ok != 1:
             return bad_request('your can apply to end the holiday maybe in check or apply faily')
         holiday.apply_end = True
+
+        long = holiday.holiday_time_end - holiday.holiday_time_begin
+        if holiday.type == 2:
+            holiday.worker.year_holidays_residue += long
+            holiday.worker.year_holidays_used -= long
+
         db.session.add(holiday)
         db.session.commit()
         return jsonify({"message": "your apply to end the holiday"})
@@ -55,6 +61,25 @@ def modify_the_holiday(id):
 
     if holiday_time_begin > holiday_time_end:
         return bad_request('begin is latter than end')
+
+    print(holiday_time_begin)
+    print(holiday.holiday_time_begin)
+
+    holiday_time_end =  datetime.strptime(holiday_time_end, '%Y-%m-%d').date()
+    holiday_time_begin = datetime.strptime(holiday_time_begin, '%Y-%m-%d').date()
+    long = (holiday_time_end - holiday_time_begin).days
+
+    old_long = (holiday.holiday_time_end - holiday.holiday_time_begin).days
+
+    if holiday.type == 2:
+        if holiday.worker.year_holidays_residue + old_long < long:
+            return bad_request("your annual leave nums isn't enough")
+        else:
+            holiday.worker.year_holidays_residue += old_long
+            holiday.worker.year_holidays_used -= old_long
+
+            holiday.worker.year_holidays_residue -= long
+            holiday.worker.year_holidays_used += long
 
     holiday.holiday_time_begin = holiday_time_begin
     holiday.holiday_time_end = holiday_time_end
@@ -95,6 +120,15 @@ def create_holiday():
 
     holiday = Holiday(type=holiday_type, worker_id=worker_id, holiday_time_begin=holiday_time_begin,
                       holiday_time_end=holiday_time_end, apply_time=date.today(), reason=reason)
+
+    long = (holiday.holiday_time_end - holiday.holiday_time_begin).days
+    if holiday.type == 2:
+        if holiday.worker.year_holidays_residue < long:
+            return bad_request("your annual leave nums isn't enough")
+        else:
+            holiday.worker.year_holidays_residue -= long
+            holiday.worker.year_holidays_used += long
+
 
     db.session.add(holiday)
     db.session.commit()
