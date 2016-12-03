@@ -4,7 +4,9 @@
 from datetime import date, datetime
 
 from flask import jsonify, request, g, abort, url_for, current_app
+
 from . import api
+from .util import add_to_db, delete_to_db, add_residue, sub_residue
 from app import db
 from .errors import bad_request
 from ..models import Worker, WorkerDegree, Holiday, WorkAdd, HolidayType
@@ -17,6 +19,58 @@ def get_holidays_info():
     for holiday in holidays:
         info.append(holiday.to_json())
     return jsonify({"holidays": info})
+
+
+# not add to document
+@api.route('/worker/holidays/<int:id>')
+def get_holiday_info(id):
+    holiday = Holiday.query.filter(Holiday.id == id).first()
+    if holiday is None:
+        return bad_request('no exit the holiday')
+    if holiday.worker_id != g.current_user.id:
+        return bad_request('you can look other people holiday')
+
+    return jsonify(holiday.to_json())
+
+
+@api.route('/worker/holidays', methods=['POST'])
+def create_holiday():
+    json_holiday = request.json
+    holiday_type = json_holiday.get('holiday_type')
+    holiday_time_begin = json_holiday.get('holiday_time_begin')
+    holiday_time_end = json_holiday.get('holiday_time_end')
+    reason = json_holiday.get('holiday_reason')
+    worker_id = g.current_user.id
+
+    holiday = Holiday(type=holiday_type, worker_id=worker_id, holiday_time_begin=holiday_time_begin,
+                      holiday_time_end=holiday_time_end, apply_time=date.today(), reason=reason)
+
+    add_to_db(holiday)
+
+    if holiday.holiday_time_begin > holiday.holiday_time_end:
+        delete_to_db(holiday)
+        return bad_request('begin is latter than end')
+
+    if reason is None or reason == "":
+        delete_to_db(holiday)
+        return bad_request('you need reason to apply')
+
+    if HolidayType.query.get(holiday_type) is None:
+        delete_to_db(holiday)
+        return bad_request('the holiday type not exit')
+
+    if holiday.type == 2:
+        long = (holiday.holiday_time_end - holiday.holiday_time_begin).days
+        if holiday.worker.year_holidays_residue < long:
+            delete_to_db(holiday)
+            return bad_request("your annual leave nums isn't enough")
+        else:
+            sub_residue(holiday.worker, long)
+
+    add_to_db(holiday)
+    return jsonify({
+        'holiday_id': holiday.id
+    }), 201
 
 
 @api.route('/worker/holidays/<int:id>', methods=['PUT'])
@@ -38,10 +92,10 @@ def modify_the_holiday(id):
     if holiday_end:
         if holiday.apply_ok != 1:
             return bad_request('your can apply to end the holiday maybe in check or apply faily')
+
         holiday.apply_end = True
 
-        db.session.add(holiday)
-        db.session.commit()
+        add_to_db(holiday)
         return jsonify({"message": "your apply to end the holiday"})
 
     if holiday.apply_ok == 1:
@@ -54,36 +108,56 @@ def modify_the_holiday(id):
     holiday_time_end = json_holiday.get("holiday_end_time")
     type = json_holiday.get('holiday_type')
 
-    holiday_time_begin = holiday_time_begin if holiday_time_begin else holiday.holiday_time_begin
-    holiday_time_end = holiday_time_end if holiday_time_end else holiday.holiday_time_end
-
-    if holiday_time_begin > holiday_time_end:
-        return bad_request('begin is latter than end')
-
-    print(holiday_time_begin)
-    print(holiday.holiday_time_begin)
-
-    holiday_time_end =  datetime.strptime(holiday_time_end, '%Y-%m-%d').date()
-    holiday_time_begin = datetime.strptime(holiday_time_begin, '%Y-%m-%d').date()
-    long = (holiday_time_end - holiday_time_begin).days
-
-    old_long = (holiday.holiday_time_end - holiday.holiday_time_begin).days
-
-    if holiday.type == '2':
-        if holiday.worker.year_holidays_residue + old_long < long:
-            return bad_request("your annual leave nums isn't enough")
-        else:
-            holiday.worker.year_holidays_residue += old_long
-            holiday.worker.year_holidays_used -= old_long
-
-            holiday.worker.year_holidays_residue -= long
-            holiday.worker.year_holidays_used += long
+    old_holiday_begin = holiday.holiday_time_begin
+    old_holiday_end = holiday.holiday_time_end
 
     holiday.holiday_time_begin = holiday_time_begin
     holiday.holiday_time_end = holiday_time_end
 
+    add_to_db(holiday)
+
+    if holiday.holiday_time_begin > holiday.holiday_time_end:
+        holiday.holiday_time_begin = old_holiday_begin
+        holiday.holiday_time_end = old_holiday_end
+        add_to_db(holiday)
+        return bad_request('begin is latter than end')
+
+    long = (holiday.holiday_time_end - holiday.holiday_time_begin).days
+    old_long = (old_holiday_end - old_holiday_begin).days
+
+    if holiday.type == 2:
+        if type == '2':
+            if holiday.worker.year_holidays_residue + old_long < long:
+                holiday.holiday_time_begin = old_holiday_begin
+                holiday.holiday_time_end = old_holiday_end
+                add_to_db(holiday)
+                return bad_request("your annual leave nums isn't enough")
+            else:
+                add_residue(holiday.worker, old_long)
+                sub_residue(holiday.worker, long)
+        elif HolidayType.query.get(type):
+            # from year to other
+            add_residue(holiday.worker, old_long)
+    # this mean your change the holiday not year to year
+    elif type == '2':
+        if holiday.worker.year_holidays_residue < long:
+            holiday.holiday_time_begin = holiday_time_begin
+            holiday.holiday_time_end = holiday_time_end
+            add_to_db(holiday)
+            return bad_request("your annual leave nums isn't enough")
+        else:
+            sub_residue(holiday.worker, long)
+
     if json_holiday.get('holiday_reason'):
         holiday.reason = json_holiday.get('holiday_reason')
+
+    holiday_over = json_holiday.get('holiday_over')
+
+    # cancel the apply holiday
+    if holiday_over:
+        if holiday.type == 2:
+            add_residue(holiday.worker, old_long)
+        holiday.apply_over = True
 
     if HolidayType.query.get(type):
         holiday.type = type
@@ -91,64 +165,8 @@ def modify_the_holiday(id):
     holiday.apply_ok = 0
     holiday.apply_state = 0
 
-    holiday_over = json_holiday.get('holiday_over')
-
-    if holiday_over:
-        holiday.worker.year_holidays_residue += long
-        holiday.worker.year_holidays_used -= long
-        holiday.apply_over = True
-
-    db.session.add(holiday)
-    db.session.commit()
+    add_to_db(holiday)
     return jsonify({'message': 'your modify your holiday apply'})
-
-
-@api.route('/worker/holidays', methods=['POST'])
-def create_holiday():
-    json_holiday = request.json
-    holiday_type = json_holiday.get('holiday_type')
-    worker_id = g.current_user.id
-    holiday_time_begin = json_holiday.get('holiday_time_begin')
-    holiday_time_end = json_holiday.get('holiday_time_end')
-    # apply_time = json_holiday.get('holiday_apply_time')
-    reason = json_holiday.get('holiday_reason')
-    # end_time = json_holiday.get('holiday_end_time')
-
-    holiday_time_end = datetime.strptime(holiday_time_end, '%Y-%m-%d').date()
-    holiday_time_begin = datetime.strptime(holiday_time_begin, '%Y-%m-%d').date()
-
-    if holiday_time_begin > holiday_time_end:
-        return bad_request('begin is latter than end')
-
-    if reason is None or reason == "":
-        return bad_request('you need reason to apply')
-
-    if HolidayType.query.get(holiday_type) is None:
-        return bad_request('the holiday type not exit')
-
-    holiday = Holiday(type=holiday_type, worker_id=worker_id, holiday_time_begin=holiday_time_begin,
-                      holiday_time_end=holiday_time_end, apply_time=date.today(), reason=reason)
-
-    if holiday_type == '2':
-        long = (holiday_time_end - holiday_time_begin).days
-        db.session.add(holiday)
-        db.session.commit()
-        if holiday.worker.year_holidays_residue < long:
-            db.session.delete(holiday)
-            db.session.commit()
-            return bad_request("your annual leave nums isn't enough")
-        else:
-            holiday.worker.year_holidays_residue -= long
-            holiday.worker.year_holidays_used += long
-        db.session.delete(holiday)
-        db.session.commit()
-
-
-    db.session.add(holiday)
-    db.session.commit()
-    return jsonify({
-        'holiday_id': holiday.id
-    }), 201
 
 
 @api.route('/worker/workadds')
@@ -171,23 +189,16 @@ def create_wordadd():
     workadd = WorkAdd(worker_id=worker_id, add_start=add_start, add_end=add_end, add_reason=add_reason,
                       apply_time=date.today())
 
-    db.session.add(workadd)
-    db.session.commit()
+    add_to_db(workadd)
 
     if workadd.add_start > workadd.add_end:
-        db.session.delete(workadd)
-        db.session.commit()
+        delete_to_db(workadd)
         return bad_request('workadd start laster than end')
 
     if add_reason is None or add_reason == "":
-        db.session.delete(workadd)
-        db.session.commit()
+        delete_to_db(workadd)
         return bad_request('workadd must have reason')
 
-
-
-    # db.session.add(workadd)
-    # db.session.commit()
     return jsonify({
         'workadd_id': workadd.id
     }), 201
@@ -220,14 +231,12 @@ def modify_the_workadd(id):
     workadd.add_start = add_start
     workadd.add_end = add_end
 
-    db.session.add(workadd)
-    db.session.commit()
+    add_to_db(workadd)
 
     if workadd.add_start > workadd.add_end:
         workadd.add_end = old_end
         workadd.add_start = old_start
-        db.session.add(workadd)
-        db.session.commit()
+        delete_to_db(workadd)
         return bad_request('the start latter than end')
 
     if add_reason:
@@ -235,9 +244,7 @@ def modify_the_workadd(id):
 
     workadd.add_state = 0
 
-
-    db.session.add(workadd)
-    db.session.commit()
+    add_to_db(workadd)
     return jsonify({'message': 'you modify your workadd'})
 
 

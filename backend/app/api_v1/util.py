@@ -2,6 +2,7 @@
 # encoding=utf-8
 
 from ..models import Permission
+from .. import db
 
 
 def check_really_degree(degree):
@@ -19,3 +20,23 @@ def check_really_degree(degree):
         degree_id = 1
 
     return degree_id
+
+
+def add_to_db(model):
+    db.session.add(model)
+    db.session.commit()
+
+
+def delete_to_db(model):
+    db.session.delete(model)
+    db.session.commit()
+
+
+def add_residue(worker, long):
+    worker.year_holidays_residue += long
+    worker.year_holidays_used -= long
+
+
+def sub_residue(worker, long):
+    worker.year_holidays_residue -= long
+    worker.year_holidays_used += long
