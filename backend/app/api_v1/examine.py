@@ -34,11 +34,11 @@ def get_examine_holidays_info():
                 for holiday in holidays:
                     # filter the holiday is over. or not in check: not allow, allow. or in cancel
 
-                    if holiday.apply_ok == 1 and holiday.apply_end and follower_degree_info.degree_id == degree_id -1:
-                        info.append(holiday)
+                    if holiday.apply_over or holiday.apply_ok == -1 or holiday.apply_state == -1:
                         continue
 
-                    if holiday.apply_over or holiday.apply_ok != 0 or holiday.apply_state == -1:
+                    if holiday.apply_ok == 1 and holiday.apply_end and follower_degree_info.degree_id == degree_id -1:
+                        info.append(holiday)
                         continue
 
                     long = holiday.holiday_time_end - holiday.holiday_time_begin

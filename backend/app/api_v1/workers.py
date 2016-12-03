@@ -27,7 +27,10 @@ def modify_the_holiday(id):
         return bad_request("the holiday isn't exit")
 
     if holiday.worker_id != g.current_user.id:
-        return bad_request("your can't modify the holiday isn't belong you")
+        return bad_request("your can't modify the holiday which is not belong you")
+
+    if holiday.apply_over:
+        return bad_request("your can't modify the holiday is over")
 
     json_holiday = request.json
     holiday_end = json_holiday.get('holiday_end')
@@ -36,11 +39,6 @@ def modify_the_holiday(id):
         if holiday.apply_ok != 1:
             return bad_request('your can apply to end the holiday maybe in check or apply faily')
         holiday.apply_end = True
-
-        long = holiday.holiday_time_end - holiday.holiday_time_begin
-        if holiday.type == 2:
-            holiday.worker.year_holidays_residue += long
-            holiday.worker.year_holidays_used -= long
 
         db.session.add(holiday)
         db.session.commit()
@@ -71,7 +69,7 @@ def modify_the_holiday(id):
 
     old_long = (holiday.holiday_time_end - holiday.holiday_time_begin).days
 
-    if holiday.type == 2:
+    if holiday.type == '2':
         if holiday.worker.year_holidays_residue + old_long < long:
             return bad_request("your annual leave nums isn't enough")
         else:
@@ -93,9 +91,16 @@ def modify_the_holiday(id):
     holiday.apply_ok = 0
     holiday.apply_state = 0
 
+    holiday_over = json_holiday.get('holiday_over')
+
+    if holiday_over:
+        holiday.worker.year_holidays_residue += long
+        holiday.worker.year_holidays_used -= long
+        holiday.apply_over = True
+
     db.session.add(holiday)
     db.session.commit()
-    return jsonify({'message': 'yoo modify your holiday apply'})
+    return jsonify({'message': 'your modify your holiday apply'})
 
 
 @api.route('/worker/holidays', methods=['POST'])
@@ -109,10 +114,13 @@ def create_holiday():
     reason = json_holiday.get('holiday_reason')
     # end_time = json_holiday.get('holiday_end_time')
 
+    holiday_time_end = datetime.strptime(holiday_time_end, '%Y-%m-%d').date()
+    holiday_time_begin = datetime.strptime(holiday_time_begin, '%Y-%m-%d').date()
+
     if holiday_time_begin > holiday_time_end:
         return bad_request('begin is latter than end')
 
-    if reason is None:
+    if reason is None or reason == "":
         return bad_request('you need reason to apply')
 
     if HolidayType.query.get(holiday_type) is None:
@@ -121,13 +129,19 @@ def create_holiday():
     holiday = Holiday(type=holiday_type, worker_id=worker_id, holiday_time_begin=holiday_time_begin,
                       holiday_time_end=holiday_time_end, apply_time=date.today(), reason=reason)
 
-    long = (holiday.holiday_time_end - holiday.holiday_time_begin).days
-    if holiday.type == 2:
+    if holiday_type == '2':
+        long = (holiday_time_end - holiday_time_begin).days
+        db.session.add(holiday)
+        db.session.commit()
         if holiday.worker.year_holidays_residue < long:
+            db.session.delete(holiday)
+            db.session.commit()
             return bad_request("your annual leave nums isn't enough")
         else:
             holiday.worker.year_holidays_residue -= long
             holiday.worker.year_holidays_used += long
+        db.session.delete(holiday)
+        db.session.commit()
 
 
     db.session.add(holiday)
@@ -154,17 +168,26 @@ def create_wordadd():
     add_end = json_holiday.get('workadd_time_end')
     add_reason = json_holiday.get('workadd_reason')
 
-    if add_start > add_end:
-        return bad_request('workadd start laster than end')
-
-    if add_reason is None:
-        return bad_request('workadd must have reason')
-
     workadd = WorkAdd(worker_id=worker_id, add_start=add_start, add_end=add_end, add_reason=add_reason,
                       apply_time=date.today())
 
     db.session.add(workadd)
     db.session.commit()
+
+    if workadd.add_start > workadd.add_end:
+        db.session.delete(workadd)
+        db.session.commit()
+        return bad_request('workadd start laster than end')
+
+    if add_reason is None or add_reason == "":
+        db.session.delete(workadd)
+        db.session.commit()
+        return bad_request('workadd must have reason')
+
+
+
+    # db.session.add(workadd)
+    # db.session.commit()
     return jsonify({
         'workadd_id': workadd.id
     }), 201
@@ -191,16 +214,27 @@ def modify_the_workadd(id):
     add_end = add_end if add_end else workadd.add_end
     add_start = add_start if add_start else workadd.add_start
 
-    if add_start > add_end:
-        return bad_request('the start latter than end')
+    old_end = workadd.add_end
+    old_start = workadd.add_start
 
-    workadd.add_end = add_end
     workadd.add_start = add_start
+    workadd.add_end = add_end
+
+    db.session.add(workadd)
+    db.session.commit()
+
+    if workadd.add_start > workadd.add_end:
+        workadd.add_end = old_end
+        workadd.add_start = old_start
+        db.session.add(workadd)
+        db.session.commit()
+        return bad_request('the start latter than end')
 
     if add_reason:
         workadd.add_reason = add_reason
 
     workadd.add_state = 0
+
 
     db.session.add(workadd)
     db.session.commit()
