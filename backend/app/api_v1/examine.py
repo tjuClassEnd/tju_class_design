@@ -8,7 +8,7 @@ from . import api
 from app import db
 from .errors import bad_request
 from .decorators import permission_required
-from .util import check_really_degree
+from .util import check_really_degree, add_to_db, delete_to_db
 from ..models import Worker, WorkerDegree, Holiday, WorkAdd, HolidayType, Permission
 
 
@@ -52,6 +52,12 @@ def get_examine_holidays_info():
                     if datetime.timedelta(days=3) < long <= datetime.timedelta(days=9) and \
                         follower_degree_info.degree_id == degree_id - 2 and \
                         holiday.apply_state == 1:
+                        info.append(holiday)
+                        continue
+
+                    if long > datetime.timedelta(days=9) and \
+                                    follower_degree_info.degree_id == degree_id - 2 and \
+                                    holiday.apply_state == 1:
                         info.append(holiday)
                         continue
 
@@ -102,12 +108,11 @@ def examine_workadd(id):
 
     workadd = WorkAdd.query.filter(WorkAdd.id == id).first()
 
-    if workadd_ok == 0:
+    if workadd_ok == '0' or workadd_ok == '' or not workadd_ok.isdigit():
         return bad_request('please set the examine')
 
     if workadd is None:
         return bad_request("don't exit the examine")
-    print(dir(workadd))
 
     if workadd.add_state != 0:
         return bad_request('the workadd is examine over')
@@ -127,8 +132,10 @@ def examine_workadd(id):
 
         if workadd_degree_id == current_degree_id - 1:
             workadd.add_state = workadd_ok
-            db.session.add(workadd)
-            db.session.commit()
+            if workadd_ok == '1':
+                workadd.worker.workAdd_time += (workadd.add_end - workadd.add_start).days
+                # print(type(workadd.add_end - workadd.add_start).days)
+            add_to_db(workadd)
             return jsonify({
                 "message": "examine ok"
             })
@@ -144,11 +151,14 @@ def examine_check_holiday(id):
 
     holiday = Holiday.query.filter(Holiday.id == id).first()
 
+    if holiday_examine_ok not in ['-1', '1']:
+        return bad_request("don't examine the holiday")
+
     if holiday is None:
         return bad_request("don't exit the holiday")
 
     if holiday.apply_state == -1:
-        return bad_request("cancel the holiday")
+        return bad_request("the applyer cancel the holiday")
 
     if holiday.apply_ok != 0 or holiday.apply_over or holiday.apply_end:
         return bad_request("holiday not in check")
@@ -171,17 +181,15 @@ def examine_check_holiday(id):
         if current_degree_id - 1 == holiday_degree_id and holiday.apply_state == 0:
             holiday.apply_state = 1
             holiday.apply_ok = holiday_examine_ok if long <= datetime.timedelta(days=3) else 0
-            db.session.add(holiday)
-            db.session.commit()
+            add_to_db(holiday)
             return jsonify({
                 "message": "examine ok"
             })
 
-        if  current_degree_id - 2 == holiday_degree_id and holiday.apply_state == 1:
+        if current_degree_id - 2 == holiday_degree_id and holiday.apply_state == 1 and long > datetime.timedelta(days=3):
             holiday.apply_state = 2
             holiday.apply_ok = holiday_examine_ok if datetime.timedelta(days=3) < long <= datetime.timedelta(days=9) else 0
-            db.session.add(holiday)
-            db.session.commit()
+            add_to_db(holiday)
             return jsonify({
                 "message": "examine ok"
             })
@@ -190,8 +198,7 @@ def examine_check_holiday(id):
                         holiday.apply_state == 2:
             holiday.apply_state = 3
             holiday.apply_ok = holiday_examine_ok
-            db.session.add(holiday)
-            db.session.commit()
+            add_to_db(holiday)
             return jsonify({
                 "message": "examine ok"
             })
@@ -233,10 +240,9 @@ def examine_over_holiday(id):
             holiday.apply_end = True
             holiday.apply_over = True
             holiday.end_time = datetime.date.today()
-            db.session.add(holiday)
-            db.session.commit()
+            add_to_db(holiday)
             return jsonify({
-                'message': 'ok'
+                'message': 'your examine over the holiday'
             })
 
     return bad_request("your can't examine the holidays")

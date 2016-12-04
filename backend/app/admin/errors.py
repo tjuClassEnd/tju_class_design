@@ -3,7 +3,7 @@
 
 from flask import jsonify
 from app.exceptions import ValidationError
-from . import api
+from . import admin_api
 
 
 def bad_request(message):
@@ -24,6 +24,6 @@ def forbidden(message):
     return response
 
 
-@api.errorhandler(ValidationError)
+@admin_api.errorhandler(ValidationError)
 def validation_error(e):
-    return bad_request(str(e))
+    return bad_request(e.args[0])

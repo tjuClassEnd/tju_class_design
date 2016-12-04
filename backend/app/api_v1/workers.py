@@ -8,7 +8,7 @@ from flask import jsonify, request, g, abort, url_for, current_app
 from . import api
 from .util import add_to_db, delete_to_db, add_residue, sub_residue
 from app import db
-from .errors import bad_request
+from .errors import bad_request, ValidationError
 from ..models import Worker, WorkerDegree, Holiday, WorkAdd, HolidayType
 
 
@@ -188,7 +188,6 @@ def create_wordadd():
 
     workadd = WorkAdd(worker_id=worker_id, add_start=add_start, add_end=add_end, add_reason=add_reason,
                       apply_time=date.today())
-
     add_to_db(workadd)
 
     if workadd.add_start > workadd.add_end:

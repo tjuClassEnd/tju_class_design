@@ -3,6 +3,7 @@
 
 from ..models import Permission
 from .. import db
+from .errors import ValidationError
 
 
 def check_really_degree(degree):
@@ -23,13 +24,19 @@ def check_really_degree(degree):
 
 
 def add_to_db(model):
-    db.session.add(model)
-    db.session.commit()
+    try:
+        db.session.add(model)
+        db.session.commit()
+    except Exception:
+        raise ValidationError("your data type is wrong, please enter the right type")
 
 
 def delete_to_db(model):
-    db.session.delete(model)
-    db.session.commit()
+    try:
+        db.session.delete(model)
+        db.session.commit()
+    except Exception:
+        raise ValidationError("your data type is wrong, please enter the right type")
 
 
 def add_residue(worker, long):

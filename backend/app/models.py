@@ -9,6 +9,7 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 from . import db
 
+
 class Permission:
     # normal worker
     APPLY_HOLIDAY = 0x01
@@ -114,7 +115,10 @@ class WorkerDegree(db.Model):
 
     def __init__(self, **kwargs):
         super(WorkerDegree, self).__init__(**kwargs)
-        if self.degree is None:
+        self.department_id = kwargs.get('department_id', 1)
+        self.degree_id = kwargs.get('degree_id', None)
+        self.worker_id = kwargs.get('worker_id')
+        if self.degree_id is None:
             if self.worker_id == current_app.config['FLASKY_ADMIN']:
                 self.degree = Degree.query.filter_by(permissions=0xff).first()
             if self.degree is None:
@@ -159,7 +163,6 @@ class Worker(db.Model):
         except:
             return None
         return Worker.query.get(data['id'])
-
 
 
 class HolidayType(db.Model):
@@ -258,6 +261,7 @@ class WorkAdd(db.Model):
     def to_json(self):
         json_workadd = {
             'workadd_id': self.id,
+            'workadd_worker_id': self.worker_id,
             'workadd_apply_time': self.apply_time,
             'workadd_start_time': self.add_start,
             'workadd_end_time': self.add_end,
