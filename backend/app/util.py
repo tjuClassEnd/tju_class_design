@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # encoding=utf-8
 
-from ..models import Permission
-from .. import db
-from .errors import ValidationError
+from app.models import Permission
+from app import db
+from .exceptions import ValidationError
 
 
 def check_really_degree(degree):

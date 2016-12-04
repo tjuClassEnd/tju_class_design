@@ -124,6 +124,14 @@ class WorkerDegree(db.Model):
             if self.degree is None:
                 self.degree = Degree.query.filter_by(default=True).first()
 
+    def to_json(self):
+        json_degree = {
+            'degree_department_id': self.department_id,
+            'degree_degree_id': self.degree_id,
+            'degree_worker_id': self.worker_id,
+        }
+        return json_degree
+
 
 class Worker(db.Model):
     __tablename__ = 'worker'
@@ -163,6 +171,23 @@ class Worker(db.Model):
         except:
             return None
         return Worker.query.get(data['id'])
+
+    def to_json(self):
+        info = []
+        for degree in self.degree_infos:
+            info.append(degree.to_json())
+        json_worker = {
+            # 'url': url_for('api.get_user', id=self.id, _external=True),
+            'worker_id': self.id,
+            'worker_name': self.name,
+            'worker_email': self.email,
+            'worker_address': self.address,
+            'worker_year_holidays_residue': self.year_holidays_residue,
+            'worker_year_holidays_used': self.year_holidays_used,
+            'worker_workAdd_time': self.workAdd_time,
+            'worker_degree': info,
+        }
+        return json_worker
 
 
 class HolidayType(db.Model):
@@ -271,3 +296,32 @@ class WorkAdd(db.Model):
         return json_workadd
 
 
+class Admin(db.Model):
+    __tablename__ = 'admin'
+    id = db.Column(db.String(64), primary_key=True)
+    password_hash = db.Column(db.String(128))
+
+    @property
+    def password(self):
+        raise AttributeError('password is not a readable attribute')
+
+    @password.setter
+    def password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def verify_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+    def generate_auth_token(self, expiration):
+        s = Serializer(current_app.config['SECRET_KEY'],
+                       expires_in=expiration)
+        return s.dumps({'id': self.id}).decode('ascii')
+
+    @staticmethod
+    def verify_auth_token(token):
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+        except:
+            return None
+        return Admin.query.get(data['id'])

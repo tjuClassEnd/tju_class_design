@@ -7,8 +7,12 @@ from . import admin_api
 
 
 def bad_request(message):
+    print(message)
     response = jsonify({'error': 'bad request', 'message': message})
+    print(message)
     response.status_code = 400
+    print(response)
+    print('hehe')
     return response
 
 
@@ -26,4 +30,5 @@ def forbidden(message):
 
 @admin_api.errorhandler(ValidationError)
 def validation_error(e):
-    return bad_request(e.args[0])
+    print('hehe123', type(e))
+    return bad_request(str(e))

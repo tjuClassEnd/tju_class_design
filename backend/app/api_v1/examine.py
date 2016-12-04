@@ -3,13 +3,13 @@
 
 import datetime
 
-from flask import jsonify, request, g, abort, url_for, current_app
+from flask import jsonify, request, g
+
+from app.util import check_really_degree, add_to_db
 from . import api
-from app import db
-from .errors import bad_request
 from .decorators import permission_required
-from .util import check_really_degree, add_to_db, delete_to_db
-from ..models import Worker, WorkerDegree, Holiday, WorkAdd, HolidayType, Permission
+from .errors import bad_request
+from ..models import Worker, WorkerDegree, Holiday, WorkAdd, Permission
 
 
 @api.route('/examine/holidays')

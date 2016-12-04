@@ -1,15 +1,14 @@
 #!/usr/bin/env python
 # encoding=utf-8
 
-from datetime import date, datetime
+from datetime import date
 
-from flask import jsonify, request, g, abort, url_for, current_app
+from flask import jsonify, request, g
 
+from app.util import add_to_db, delete_to_db, add_residue, sub_residue
 from . import api
-from .util import add_to_db, delete_to_db, add_residue, sub_residue
-from app import db
-from .errors import bad_request, ValidationError
-from ..models import Worker, WorkerDegree, Holiday, WorkAdd, HolidayType
+from .errors import bad_request
+from ..models import Holiday, WorkAdd, HolidayType
 
 
 @api.route('/worker/holidays')
