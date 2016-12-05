@@ -8,7 +8,7 @@ from flask import jsonify, request, g
 from app.util import add_to_db, delete_to_db, add_residue, sub_residue
 from . import admin_api
 from .errors import bad_request, validation_error
-from ..models import Admin, Worker, WorkerDegree
+from ..models import Admin, Worker, WorkerDegree, Degree
 
 
 @admin_api.route('/users/')
@@ -38,6 +38,7 @@ def add_worker():
 
     return jsonify({'message': "add the new worker"})
 
+
 @admin_api.route('/users/<string:id>/degree', methods=["POST"])
 def add_degree_to_worker(id):
     json_worker = request.json
@@ -52,3 +53,61 @@ def add_degree_to_worker(id):
     return jsonify({'message': 'your add the degree to worker {}'.format(id)})
 
 
+@admin_api.route('/users/<string:id>', methods=['PUT'])
+def modify_worker_info(id):
+    worker = Worker.query.get(id)
+
+    if worker is None:
+        return bad_request('no exits the worker')
+
+    json_worker = request.json
+    name = json_worker.get('worker_name')
+    email = json_worker.get('worker_email')
+    address = json_worker.get('worker_address')
+    password = json_worker.get('worker_password')
+    year_holidays_residue = json_worker.get('worker_year_holidays_residue')
+    year_holidays_used = json_worker.get('worker_year_holidays_use')
+    workAdd_time = json_worker.get('workAdd_time')
+
+    if name:
+        worker.name = name
+
+    if email:
+        worker.email = email
+
+    if address:
+        worker.address = address
+
+    if password:
+        worker.password = password
+
+    if year_holidays_used:
+        worker.year_holidays_used = year_holidays_used
+
+    if year_holidays_residue:
+        worker.year_holidays_residue = year_holidays_residue
+
+    if workAdd_time:
+        worker.workAdd_time = workAdd_time
+
+    add_to_db(worker)
+    return jsonify({'message': 'you modify the worker info'})
+
+
+@admin_api.route('/users/<string:uid>/department/<int:did>', methods=['PUT'])
+def modify_worker_degree(uid, did):
+    worker_degree = WorkerDegree.query.filter(WorkerDegree.worker_id == uid, WorkerDegree.department_id == did).first()
+
+    if worker_degree is None:
+        return bad_request("no exits the woker's degree")
+
+    json_worker = request.json
+    degree = json_worker.get('worker_degree_degree')
+
+    if Degree.query.filter(Degree.id == degree).first() is None:
+        return bad_request("no exits the degree")
+
+    worker_degree.degree_id = degree
+    add_to_db(worker_degree)
+
+    return jsonify({'message': 'your modify the worker degree'})
