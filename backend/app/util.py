@@ -27,7 +27,8 @@ def add_to_db(model):
     try:
         db.session.add(model)
         db.session.commit()
-    except Exception:
+    except Exception as e:
+        print(e)
         raise ValidationError("your data type is wrong, please enter the right type")
 
 

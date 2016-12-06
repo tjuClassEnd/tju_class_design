@@ -162,10 +162,14 @@ POST `服务器ip：服务器端口/api/v1.0/worker/holidays`
 注意修改只能在还没被审批时和申请被驳回时才能修改。
 申请结束必须在这次假已经成功申请之后才能申请。
 
-PUT`服务器ip：服务器端口/api/v1.0/worker/holidays／holiday的id
-`
+PUT\`服务器ip：服务器端口/api/v1.0/worker/holidays／holiday的id
+\`
 请求修改例子如下：
 注意over是修改直接放弃这次请假
+	{
+	"holiday_over": "1"
+	}
+下面是修改一个假的信息
 	{
 	"holiday_reason": "just haha",
 	"holiday_begin_time": "2016-10-1",
@@ -173,6 +177,11 @@ PUT`服务器ip：服务器端口/api/v1.0/worker/holidays／holiday的id
 	"holiday_type": "3",
 	"holiday_over": "1"
 	}
+下面是当你审批ok之后，放完假，回来工作了，要申请销假
+	{
+	"holiday_end": “1”
+	} 
+
 
 返回：
 成功时
@@ -209,8 +218,8 @@ PUT`服务器ip：服务器端口/api/v1.0/worker/holidays／holiday的id
 
 #### 用户申请结束自己的假期
 申请销假：
-PUT`服务器ip：服务器端口/api/v1.0/worker/holidays／holiday的id
-`	{
+PUT\`服务器ip：服务器端口/api/v1.0/worker/holidays／holiday的id
+\`   {
 	"holiday_end" : "1"
 	}
 
@@ -227,8 +236,8 @@ PUT`服务器ip：服务器端口/api/v1.0/worker/holidays／holiday的id
 
 
 #### 用户查看自己加班申请的信息
-GET `服务器ip：服务器端口/api/v1.0/worker/workadds
-`
+GET \`服务器ip：服务器端口/api/v1.0/worker/workadds
+\`
 返回：
 同holidays，如果没有为空数组
 	{
@@ -269,8 +278,8 @@ GET `服务器ip：服务器端口/api/v1.0/worker/workadds
 	}
 
 #### 创建新的加班
-POST `服务器ip：服务器端口/api/v1.0/worker/workadds
-`	{
+POST \`服务器ip：服务器端口/api/v1.0/worker/workadds
+\`   {
 	"workadd_time_begin": "2016,10,1",
 	"workadd_time_end": "2016,10,2",
 	"workadd_reason": "just like work"
@@ -294,8 +303,8 @@ POST `服务器ip：服务器端口/api/v1.0/worker/workadds
 	}
 
 #### 修改加班信息
-PUT`服务器ip：服务器端口/api/v1.0/worker/workadds／workadd的id
-`	{
+PUT\`服务器ip：服务器端口/api/v1.0/worker/workadds／workadd的id
+\`   {
 	"workadd_reason": "just tkjf",
 	"workadd_start": "2016-10-1",
 	"workadd_end": "2016-10-2"
@@ -317,8 +326,8 @@ PUT`服务器ip：服务器端口/api/v1.0/worker/workadds／workadd的id
 ### 管理操作
 以下操作需要对应的权限
 #### 查看自己目前需要管理的申请的holidays
-GET`服务器ip：服务器端口/api/v1.0/examine/holidays
-`
+GET\`服务器ip：服务器端口/api/v1.0/examine/holidays
+\`
 下面字段含义和上面的一样
 返回：
 	{
@@ -369,8 +378,8 @@ GET`服务器ip：服务器端口/api/v1.0/examine/holidays
 	}
 
 #### 审批对应的申请holiday
-PUT `服务器ip：服务器端口/api/v1.0/examine/holidays/holiday的id/check
-`
+PUT \`服务器ip：服务器端口/api/v1.0/examine/holidays/holiday的id/check
+\`
 	{
 	"holiday_ok": "-1"
 	}
@@ -407,8 +416,8 @@ PUT `服务器ip：服务器端口/api/v1.0/examine/holidays/holiday的id/check
 	}
 
 #### 审批对应的销假
-PUT `服务器ip：服务器端口/api/v1.0/examine/holidays/holiday的id/over
-`
+PUT \`服务器ip：服务器端口/api/v1.0/examine/holidays/holiday的id/over
+\`
 
 	{
 	"holiday_over": "1"
@@ -444,8 +453,8 @@ PUT `服务器ip：服务器端口/api/v1.0/examine/holidays/holiday的id/over
 	}
 
 #### 查看自己需要审批的加班
-GET`服务器ip：服务器端口/api/v1.0/examine/workadds
-`
+GET\`服务器ip：服务器端口/api/v1.0/examine/workadds
+\`
 返回
 	{
 	"workadds": [
@@ -461,8 +470,8 @@ GET`服务器ip：服务器端口/api/v1.0/examine/workadds
 	}
 
 #### 管理下属加班
-PUT`服务器ip：服务器端口/api/v1.0/examine/workadds／加班的id
-`
+PUT\`服务器ip：服务器端口/api/v1.0/examine/workadds／加班的id
+\`
 	{
 	"workadd_ok": "-1"
 	}

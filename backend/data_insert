@@ -1,0 +1,66 @@
+worker = Worker(id='3013218001', password='123', name='worker1', address='tju', email='123@123.com')
+db.session.add(worker)
+
+worker = Worker(id='3013218002', password='123', name='chief1', address='tju', email='123@123.com')
+db.session.add(worker)
+
+worker = Worker(id='3013218003', password='123', name='MINISTER1', address='tju', email='123@123.com')
+db.session.add(worker)
+
+worker = Worker(id='3013218004', password='123', name='Manager', address='tju', email='123@123.com')
+db.session.add(worker)
+
+worker = Worker(id='3013218005', password='123', name='CEO', address='tju', email='123@123.com')
+db.session.add(worker)
+
+worker = Worker(id='3013218006', password='123', name='worker2', address='tju', email='123@123.com')
+db.session.add(worker)
+
+worker = Worker(id='3013218007', password='123', name='chief2', address='tju', email='123@123.com')
+db.session.add(worker)
+
+worker = Worker(id='3013218008', password='123', name='MINISTER2', address='tju', email='123@123.com')
+db.session.add(worker)
+
+
+work_degree = WorkerDegree(department_id='1', degree_id='1', worker_id='3013218001')
+db.session.add(work_degree)
+
+work_degree = WorkerDegree(department_id='1', degree_id='2', worker_id='3013218002')
+db.session.add(work_degree)
+
+work_degree = WorkerDegree(department_id='1', degree_id='3', worker_id='3013218003')
+db.session.add(work_degree)
+
+work_degree = WorkerDegree(department_id='1', degree_id='4', worker_id='3013218004')
+db.session.add(work_degree)
+
+work_degree = WorkerDegree(department_id='2', degree_id='4', worker_id='3013218004')
+db.session.add(work_degree)
+
+work_degree = WorkerDegree(department_id='3', degree_id='4', worker_id='3013218004')
+db.session.add(work_degree)
+
+work_degree = WorkerDegree(department_id='4', degree_id='4', worker_id='3013218004')
+db.session.add(work_degree)
+
+work_degree = WorkerDegree(department_id='1', degree_id='5', worker_id='3013218005')
+db.session.add(work_degree)
+
+work_degree = WorkerDegree(department_id='2', degree_id='5', worker_id='3013218005')
+db.session.add(work_degree)
+
+work_degree = WorkerDegree(department_id='3', degree_id='5', worker_id='3013218005')
+db.session.add(work_degree)
+
+work_degree = WorkerDegree(department_id='4', degree_id='5', worker_id='3013218005')
+db.session.add(work_degree)
+
+work_degree = WorkerDegree(department_id='2', degree_id='1', worker_id='3013218006')
+db.session.add(work_degree)
+
+work_degree = WorkerDegree(department_id='2', degree_id='2', worker_id='3013218007')
+db.session.add(work_degree)
+
+work_degree = WorkerDegree(department_id='2', degree_id='3', worker_id='3013218008')
+db.session.add(work_degree)

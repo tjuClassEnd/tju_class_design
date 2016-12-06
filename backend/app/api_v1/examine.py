@@ -42,7 +42,6 @@ def get_examine_holidays_info():
                         continue
 
                     long = holiday.holiday_time_end - holiday.holiday_time_begin
-                    print(long)
 
                     if long <= datetime.timedelta(days=3) and \
                                     follower_degree_info.degree_id == degree_id - 1:
