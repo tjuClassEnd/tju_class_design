@@ -246,3 +246,42 @@ def modify_the_workadd(id):
     return jsonify({'message': 'you modify your workadd'})
 
 
+@api.route('/users/', methods=['PUT'])
+def modify_worker_info():
+    worker = g.current_user
+
+    if worker is None:
+        return bad_request('no exits the worker')
+
+    json_worker = request.json
+    name = json_worker.get('worker_name')
+    email = json_worker.get('worker_email')
+    address = json_worker.get('worker_address')
+    password = json_worker.get('worker_password')
+    year_holidays_residue = json_worker.get('worker_year_holidays_residue')
+    year_holidays_used = json_worker.get('worker_year_holidays_use')
+    workAdd_time = json_worker.get('workAdd_time')
+
+    if name:
+        worker.name = name
+
+    if email:
+        worker.email = email
+
+    if address:
+        worker.address = address
+
+    if password:
+        worker.password = password
+
+    if year_holidays_used:
+        worker.year_holidays_used = year_holidays_used
+
+    if year_holidays_residue:
+        worker.year_holidays_residue = year_holidays_residue
+
+    if workAdd_time:
+        worker.workAdd_time = workAdd_time
+
+    add_to_db(worker)
+    return jsonify({'message': 'you modify the worker info'})
