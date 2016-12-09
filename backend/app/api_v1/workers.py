@@ -42,8 +42,6 @@ def get_holidays_info():
     except:
         return jsonify({'holidays': []})
 
-    print(type(Holiday.query))
-    print(type(holidays))
     page_nums = holidays.pages
     holiday_info = holidays.items
     if not holiday_info:
