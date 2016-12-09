@@ -11,13 +11,48 @@ from .errors import bad_request
 from ..models import Holiday, WorkAdd, HolidayType
 
 
-@api.route('/worker/holidays')
+@api.route('/worker/holidays/')
 def get_holidays_info():
-    holidays = g.current_user.holidays
+    page = request.args.get('page')
+    per_page = request.args.get('per_page')
+    want_all = request.args.get('want_all')
+
+    if not page:
+        page = "1"
+    if not per_page:
+        per_page = "10"
+
+    if not page.isdigit():
+        return bad_request('page must be number')
+    if not per_page.isdigit():
+        return bad_request('per_page must be number')
+
+    page = int(page)
+    per_page = int(per_page)
+
+    if want_all:
+        holidays = g.current_user.holidays
+        info = []
+        for holiday in holidays:
+            info.append(holiday.to_json())
+        return jsonify({"holidays": info})
+
+    try:
+        holidays = Holiday.query.filter(Holiday.worker_id == g.current_user.id).paginate(page=page, per_page=per_page)
+    except:
+        return jsonify({'holidays': []})
+
+    print(type(Holiday.query))
+    print(type(holidays))
+    page_nums = holidays.pages
+    holiday_info = holidays.items
+    if not holiday_info:
+        holiday_info = []
     info = []
-    for holiday in holidays:
+    for holiday in holiday_info:
         info.append(holiday.to_json())
-    return jsonify({"holidays": info})
+    return jsonify({'holidays': info,
+                    'total_page_num': page_nums})
 
 
 # not add to document
@@ -170,11 +205,44 @@ def modify_the_holiday(id):
 
 @api.route('/worker/workadds')
 def get_workadds_info():
-    workadds = g.current_user.workadds
+    page = request.args.get('page')
+    per_page = request.args.get('per_page')
+    want_all = request.args.get('want_all')
+
+    if not page:
+        page = "1"
+    if not per_page:
+        per_page = "10"
+
+    if not page.isdigit():
+        return bad_request('page must be number')
+    if not per_page.isdigit():
+        return bad_request('per_page must be number')
+
+    page = int(page)
+    per_page = int(per_page)
+
+    if want_all:
+        workadds = g.current_user.workadds
+        info = []
+        for workadd in workadds:
+            info.append(workadd.to_json())
+        return jsonify({"workadds": info})
+
+    try:
+        workadds = WorkAdd.query.filter(WorkAdd.worker_id == g.current_user.id).paginate(page=page, per_page=per_page)
+    except:
+        return jsonify({'workadds': []})
+
+    page_nums = workadds.pages
+    workadds_info = workadds.items
+    if not workadds_info:
+        holiday_info = []
     info = []
-    for workadd in workadds:
+    for workadd in holiday_info:
         info.append(workadd.to_json())
-    return jsonify({"workadds": info})
+    return jsonify({'workadds': info,
+                    'total_page_num': page_nums})
 
 
 @api.route('/worker/workadds', methods=['POST'])
@@ -246,7 +314,7 @@ def modify_the_workadd(id):
     return jsonify({'message': 'you modify your workadd'})
 
 
-@api.route('/users/', methods=['PUT'])
+@api.route('/user/', methods=['PUT'])
 def modify_worker_info():
     worker = g.current_user
 
@@ -285,3 +353,13 @@ def modify_worker_info():
 
     add_to_db(worker)
     return jsonify({'message': 'you modify the worker info'})
+
+
+@api.route('/user/', methods=['GET'])
+def get_worker_info():
+    worker = g.current_user
+
+    if worker is None:
+        return bad_request('no exits the worker')
+
+    return jsonify(worker.to_json())

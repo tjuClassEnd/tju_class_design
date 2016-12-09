@@ -13,11 +13,44 @@ from ..models import Admin, Worker, WorkerDegree, Degree
 
 @admin_api.route('/users/')
 def get_worker_info():
-    workers = Worker.query.filter(1 == 1).all()
+    page = request.args.get('page')
+    per_page = request.args.get('per_page')
+    want_all = request.args.get('want_all')
+
+    if not page:
+        page = "1"
+    if not per_page:
+        per_page = "10"
+
+    if not page.isdigit():
+        return bad_request('page must be number')
+    if not per_page.isdigit():
+        return bad_request('per_page must be number')
+
+    page = int(page)
+    per_page = int(per_page)
+
+    if want_all:
+        workers = Worker.query.filter(1 == 1).all()
+        info = []
+        for worker in workers:
+            info.append(worker.to_json())
+        return jsonify({"workers": info})
+
+    try:
+        workers = Worker.query.filter(1 == 1).paginate(page=page, per_page=per_page)
+    except:
+        return jsonify({'workers': []})
+
+    page_nums = workers.pages
+    workers_info = workers.items
+    if not workers_info:
+        workers_info = []
     info = []
-    for worker in workers:
+    for worker in workers_info:
         info.append(worker.to_json())
-    return jsonify({"workers": info})
+    return jsonify({'workers': info,
+                    'total_page_num': page_nums})
 
 
 @admin_api.route('/users/', methods=['POST'])
