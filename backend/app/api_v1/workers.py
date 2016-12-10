@@ -136,15 +136,15 @@ def modify_the_holiday(id):
     if holiday.apply_state not in [0, -1] and holiday.apply_ok != -1:
         return bad_request("you can't modify the holiday in check")
 
-    holiday_time_begin = json_holiday.get("holiday_begin_time")
-    holiday_time_end = json_holiday.get("holiday_end_time")
+    holiday_time_begin = json_holiday.get("holiday_time_begin")
+    holiday_time_end = json_holiday.get("holiday_time_end")
     type = json_holiday.get('holiday_type')
 
     old_holiday_begin = holiday.holiday_time_begin
     old_holiday_end = holiday.holiday_time_end
 
-    holiday.holiday_time_begin = holiday_time_begin
-    holiday.holiday_time_end = holiday_time_end
+    holiday.holiday_time_begin = holiday_time_begin if holiday_time_begin else old_holiday_begin
+    holiday.holiday_time_end = holiday_time_end if holiday_time_end else old_holiday_end
 
     add_to_db(holiday)
 
