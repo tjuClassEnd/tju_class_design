@@ -12,6 +12,12 @@
 - POST：创建一个新的资源
 - GET：获得对应的资源
 
+GET请求查询时，都做了分页：
+- page: 第几页
+- per\_page：每一页有多少
+- want\_all：要全部的页
+
+
 ## 对应接口
 ### 普通操作
 holiday\_apply\_state：0:正在等待审批， -1:取消中， 1:在一级审批， 2：在2级审批， 3: 在3级审批
@@ -487,3 +493,43 @@ PUT\`服务器ip：服务器端口/api/v1.0/examine/workadds／加班的id
 	"error": "bad request",
 	"message": "the workadd is examine over"
 	}
+
+
+### 用户查看修改自己的信息
+是在api/v1.0下面的
+	@api.route('/user/', methods=['PUT'])
+	    json_worker = request.json
+	    name = json_worker.get('worker_name')
+	    email = json_worker.get('worker_email')
+	    address = json_worker.get('worker_address')
+	    password = json_worker.get('worker_password')
+	    year_holidays_residue = json_worker.get('worker_year_holidays_residue')
+	    year_holidays_used = json_worker.get('worker_year_holidays_use')
+	    workAdd_time = json_worker.get('workAdd_time')
+
+	@api.route('/user/', methods=['GET'])
+	def get_worker_info():
+	    worker = g.current_user
+
+	    if worker is None:
+	        return bad_request('no exits the worker')
+
+	    return jsonify(worker.to_json())
+
+### admin
+注意这是单独的另外一个url 比如127.0.0.1:5000/admin/xxxx
+- @admin_api.route('/users/')
+	- @admin_api.route('/users/', methods=['POST’]())：字段有：worker\_id,worker_name,worker\_email,worker\_address,password
+	- @admin_api.route('/users/\<string:id\>/degree', methods=["POST”]())，字段有：degree\_department\_id,degree\_degree\_id
+	- @admin_api.route('/users/\<string:id\>', methods=['PUT’]()),字段有：name = worker\_name,worker\_email,worker\_address,worker\_password,worker\_year\_holidays\_residue,worker\_year\_holidays\_use,workAdd\_time
+	- @admin_api.route('/users/\<string:uid\>/department/\<int:did\>', methods=['PUT’]())字段有:worker\_degree\_degree
+
+
+
+
+
+
+
+
+
+
