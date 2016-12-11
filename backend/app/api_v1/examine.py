@@ -17,61 +17,91 @@ from ..models import Worker, WorkerDegree, Holiday, WorkAdd, Permission
 def get_examine_holidays_info():
     degree_infos = g.current_user.degree_infos
     info = []
-    for degree in degree_infos:
-        if degree.degree_id == 1:
-            continue
+    want_all = request.args.get('want_all')
+    if want_all:
+        for degree in degree_infos:
+            if degree.degree_id == 1:
+                continue
 
-        degree_id = check_really_degree(degree)
+            degree_id = check_really_degree(degree)
 
-        followers_degree_info = WorkerDegree.query.filter(WorkerDegree.degree_id < degree_id,
-                                  WorkerDegree.department_id == degree.department_id).all()
-        for follower_degree_info in followers_degree_info:
-            # because the request don't think multi-department is need, so write is ugly
-            # followers is one people
-            followers = Worker.query.filter(Worker.id == follower_degree_info.worker_id).all()
-            for follower in followers:
-                holidays = follower.holidays
-                for holiday in holidays:
-                    # filter the holiday is over. or not in check: not allow, allow. or in cancel
-
-                    if holiday.apply_over or holiday.apply_ok == -1 or holiday.apply_state == -1:
-                        continue
-
-                    if holiday.apply_ok == 1 and holiday.apply_end and follower_degree_info.degree_id == degree_id -1:
-                        info.append(holiday)
-                        continue
-
-                    if holiday.apply_ok == 1:
-                        continue
-
-                    long = holiday.holiday_time_end - holiday.holiday_time_begin
-
-                    # if long <= datetime.timedelta(days=3) and \
-                    #                 follower_degree_info.degree_id == degree_id - 1:
-                    #         info.append(holiday)
-                    #         continue
-
-                    if follower_degree_info.degree_id == degree_id - 1 and holiday.apply_state == 0:
+            followers_degree_info = WorkerDegree.query.filter(WorkerDegree.degree_id < degree_id,
+                                                              WorkerDegree.department_id == degree.department_id).all()
+            for follower_degree_info in followers_degree_info:
+                # because the request don't think multi-department is need, so write is ugly
+                # followers is one people
+                followers = Worker.query.filter(Worker.id == follower_degree_info.worker_id).all()
+                for follower in followers:
+                    holidays = follower.holidays
+                    for holiday in holidays:
+                        long = holiday.holiday_time_end - holiday.holiday_time_begin
+                        if follower_degree_info.degree_id == degree_id -1:
                             info.append(holiday)
                             continue
 
-                    if datetime.timedelta(days=3) < long <= datetime.timedelta(days=9) and \
-                        follower_degree_info.degree_id == degree_id - 2 and \
-                        holiday.apply_state == 1:
-                        info.append(holiday)
-                        continue
+                        if follower_degree_info.degree_id == degree_id -2 and long > datetime.timedelta(days=6):
+                            info.append(holiday)
+                            continue
 
-                    if long > datetime.timedelta(days=9) and \
-                                    follower_degree_info.degree_id == degree_id - 2 and \
-                                    holiday.apply_state == 1:
-                        info.append(holiday)
-                        continue
+                        if follower_degree_info.degree_id == degree_id -3 and long > datetime.timedelta(days=9):
+                            info.append(holiday)
+                            continue
+    else:
+        for degree in degree_infos:
+            if degree.degree_id == 1:
+                continue
 
-                    if long > datetime.timedelta(days=9) and \
-                        follower_degree_info.degree_id == degree_id -3 and\
-                        holiday.apply_state == 2:
-                        info.append(holiday)
-                        continue
+            degree_id = check_really_degree(degree)
+
+            followers_degree_info = WorkerDegree.query.filter(WorkerDegree.degree_id < degree_id,
+                                      WorkerDegree.department_id == degree.department_id).all()
+            for follower_degree_info in followers_degree_info:
+                # because the request don't think multi-department is need, so write is ugly
+                # followers is one people
+                followers = Worker.query.filter(Worker.id == follower_degree_info.worker_id).all()
+                for follower in followers:
+                    holidays = follower.holidays
+                    for holiday in holidays:
+                        # filter the holiday is over. or not in check: not allow, allow. or in cancel
+
+                        if holiday.apply_over or holiday.apply_ok == -1 or holiday.apply_state == -1:
+                            continue
+
+                        if holiday.apply_ok == 1 and holiday.apply_end and follower_degree_info.degree_id == degree_id -1:
+                            info.append(holiday)
+                            continue
+
+                        if holiday.apply_ok == 1:
+                            continue
+
+                        long = holiday.holiday_time_end - holiday.holiday_time_begin
+
+                        # if long <= datetime.timedelta(days=3) and \
+                        #                 follower_degree_info.degree_id == degree_id - 1:
+                        #         info.append(holiday)
+                        #         continue
+
+                        if follower_degree_info.degree_id == degree_id - 1 and holiday.apply_state == 0:
+                                info.append(holiday)
+                                continue
+
+                        if datetime.timedelta(days=3) < long <= datetime.timedelta(days=9) and \
+                            follower_degree_info.degree_id == degree_id - 2 and \
+                            holiday.apply_state == 1:
+                            info.append(holiday)
+                            continue
+
+                        if long > datetime.timedelta(days=9) and \
+                                        follower_degree_info.degree_id == degree_id - 2 and \
+                                        holiday.apply_state == 1:
+                            info.append(holiday)
+                            continue
+
+                        if long > datetime.timedelta(days=9) and \
+                            follower_degree_info.degree_id == degree_id -3 and\
+                            holiday.apply_state == 2:
+                            info.append(holiday)
+                            continue
     jsons = []
     for holiday in info:
         jsons.append(holiday.to_json())
@@ -83,6 +113,7 @@ def get_examine_holidays_info():
 def get_examine_workadds_info():
     degree_infos = g.current_user.degree_infos
     info = []
+    want_all = request.args.get('want_all')
     for degree in degree_infos:
         if degree.degree_id == 1:
             continue
@@ -96,8 +127,9 @@ def get_examine_workadds_info():
             for follower in followers:
                 workadds = follower.workadds
                 for workadd in workadds:
-                    if workadd.add_state != 0:
-                        continue
+                    if not want_all:
+                        if workadd.add_state != 0:
+                            continue
                     info.append(workadd)
 
     jsons = []
