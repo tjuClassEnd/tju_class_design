@@ -11,7 +11,7 @@ from .errors import bad_request
 from ..models import Holiday, WorkAdd, HolidayType
 
 
-@api.route('/worker/holidays/')
+@api.route('/worker/holidays')
 def get_holidays_info():
     page = request.args.get('page')
     per_page = request.args.get('per_page')
