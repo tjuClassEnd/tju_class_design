@@ -37,7 +37,7 @@ def before_request():
     pass
 
 
-@api.route('/token')
+@api.route('/token/')
 def get_token():
     if g.token_used:
         return unauthorized('Invalid credentials')
