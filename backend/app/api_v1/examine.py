@@ -41,10 +41,17 @@ def get_examine_holidays_info():
                         info.append(holiday)
                         continue
 
+                    if holiday.apply_ok == 1:
+                        continue
+
                     long = holiday.holiday_time_end - holiday.holiday_time_begin
 
-                    if long <= datetime.timedelta(days=3) and \
-                                    follower_degree_info.degree_id == degree_id - 1:
+                    # if long <= datetime.timedelta(days=3) and \
+                    #                 follower_degree_info.degree_id == degree_id - 1:
+                    #         info.append(holiday)
+                    #         continue
+
+                    if follower_degree_info.degree_id == degree_id - 1 and holiday.apply_state == 0:
                             info.append(holiday)
                             continue
 
