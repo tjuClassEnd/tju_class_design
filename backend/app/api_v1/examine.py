@@ -12,7 +12,7 @@ from .errors import bad_request
 from ..models import Worker, WorkerDegree, Holiday, WorkAdd, Permission
 
 
-@api.route('/examine/holidays')
+@api.route('/examine/holidays/')
 @permission_required(Permission.MANAGE_WORK)
 def get_examine_holidays_info():
     degree_infos = g.current_user.degree_infos
@@ -108,7 +108,7 @@ def get_examine_holidays_info():
     return jsonify({"holidays": jsons})
 
 
-@api.route('/examine/workadds')
+@api.route('/examine/workadds/')
 @permission_required(Permission.MANAGE_WORK)
 def get_examine_workadds_info():
     degree_infos = g.current_user.degree_infos
@@ -138,7 +138,7 @@ def get_examine_workadds_info():
     return jsonify({"workadds": jsons})
 
 
-@api.route('/examine/workadds/<int:id>', methods=['PUT'])
+@api.route('/examine/workadds/<int:id>/', methods=['PUT'])
 @permission_required(Permission.MANAGE_WORK)
 def examine_workadd(id):
     json_holiday = request.json
@@ -181,7 +181,7 @@ def examine_workadd(id):
     return bad_request("your can't examine the workadd")
 
 
-@api.route('/examine/holidays/<int:id>/check', methods=['PUT'])
+@api.route('/examine/holidays/<int:id>/check/', methods=['PUT'])
 @permission_required(Permission.MANAGE_WORK)
 def examine_check_holiday(id):
     json_holiday = request.json
@@ -246,7 +246,7 @@ def examine_check_holiday(id):
     return bad_request("your can't examine the holidays")
 
 
-@api.route('/examine/holidays/<int:id>/over', methods=['PUT'])
+@api.route('/examine/holidays/<int:id>/over/', methods=['PUT'])
 @permission_required(Permission.MANAGE_WORK)
 def examine_over_holiday(id):
     json_holiday = request.json

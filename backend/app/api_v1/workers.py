@@ -11,7 +11,7 @@ from .errors import bad_request
 from ..models import Holiday, WorkAdd, HolidayType
 
 
-@api.route('/worker/holidays')
+@api.route('/worker/holidays/')
 def get_holidays_info():
     page = request.args.get('page')
     per_page = request.args.get('per_page')
@@ -54,7 +54,7 @@ def get_holidays_info():
 
 
 # not add to document
-@api.route('/worker/holidays/<int:id>')
+@api.route('/worker/holidays/<int:id>/')
 def get_holiday_info(id):
     holiday = Holiday.query.filter(Holiday.id == id).first()
     if holiday is None:
@@ -65,7 +65,7 @@ def get_holiday_info(id):
     return jsonify(holiday.to_json())
 
 
-@api.route('/worker/holidays', methods=['POST'])
+@api.route('/worker/holidays/', methods=['POST'])
 def create_holiday():
     json_holiday = request.json
     holiday_type = json_holiday.get('holiday_type')
@@ -105,7 +105,7 @@ def create_holiday():
     }), 201
 
 
-@api.route('/worker/holidays/<int:id>', methods=['PUT'])
+@api.route('/worker/holidays/<int:id>/', methods=['PUT'])
 def modify_the_holiday(id):
     holiday = Holiday.query.filter(Holiday.id == id).first()
 
@@ -201,7 +201,7 @@ def modify_the_holiday(id):
     return jsonify({'message': 'your modify your holiday apply'})
 
 
-@api.route('/worker/workadds')
+@api.route('/worker/workadds/')
 def get_workadds_info():
     page = request.args.get('page')
     per_page = request.args.get('per_page')
@@ -243,7 +243,7 @@ def get_workadds_info():
                     'total_page_num': page_nums})
 
 
-@api.route('/worker/workadds', methods=['POST'])
+@api.route('/worker/workadds/', methods=['POST'])
 def create_wordadd():
     json_holiday = request.json
     worker_id = g.current_user.id
@@ -268,7 +268,7 @@ def create_wordadd():
     }), 201
 
 
-@api.route('/worker/workadds/<int:id>', methods=['PUT'])
+@api.route('/worker/workadds/<int:id>/', methods=['PUT'])
 def modify_the_workadd(id):
     workadd = WorkAdd.query.filter(WorkAdd.id == id).first()
 
@@ -353,7 +353,7 @@ def modify_worker_info():
     return jsonify({'message': 'you modify the worker info'})
 
 
-@api.route('/user', methods=['GET'])
+@api.route('/user/', methods=['GET'])
 def get_worker_info():
     worker = g.current_user
 

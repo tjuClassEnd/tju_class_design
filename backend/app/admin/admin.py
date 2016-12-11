@@ -72,7 +72,7 @@ def add_worker():
     return jsonify({'message': "add the new worker"})
 
 
-@admin_api.route('/users/<string:id>/degree', methods=["POST"])
+@admin_api.route('/users/<string:id>/degree/', methods=["POST"])
 def add_degree_to_worker(id):
     json_worker = request.json
     department_id = json_worker.get('degree_department_id')
@@ -86,7 +86,7 @@ def add_degree_to_worker(id):
     return jsonify({'message': 'your add the degree to worker {}'.format(id)})
 
 
-@admin_api.route('/users/<string:id>', methods=['PUT'])
+@admin_api.route('/users/<string:id>/', methods=['PUT'])
 def modify_worker_info(id):
     worker = Worker.query.get(id)
 
@@ -127,7 +127,7 @@ def modify_worker_info(id):
     return jsonify({'message': 'you modify the worker info'})
 
 
-@admin_api.route('/users/<string:uid>/department/<int:did>', methods=['PUT'])
+@admin_api.route('/users/<string:uid>/department/<int:did>/', methods=['PUT'])
 def modify_worker_degree(uid, did):
     worker_degree = WorkerDegree.query.filter(WorkerDegree.worker_id == uid, WorkerDegree.department_id == did).first()
 
