@@ -219,6 +219,7 @@ def examine_check_holiday(id):
         if current_degree_id - 1 == holiday_degree_id and holiday.apply_state == 0:
             holiday.apply_state = 1
             holiday.apply_ok = holiday_examine_ok if long <= datetime.timedelta(days=3) else 0
+            holiday.apply_ok = holiday.apply_ok if holiday_examine_ok else holiday_examine_ok
             add_to_db(holiday)
             return jsonify({
                 "message": "examine ok"
@@ -227,6 +228,7 @@ def examine_check_holiday(id):
         if current_degree_id - 2 == holiday_degree_id and holiday.apply_state == 1 and long > datetime.timedelta(days=3):
             holiday.apply_state = 2
             holiday.apply_ok = holiday_examine_ok if datetime.timedelta(days=3) < long <= datetime.timedelta(days=9) else 0
+            holiday.apply_ok = holiday.apply_ok if holiday_examine_ok else holiday_examine_ok
             add_to_db(holiday)
             return jsonify({
                 "message": "examine ok"

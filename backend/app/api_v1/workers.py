@@ -353,7 +353,7 @@ def modify_worker_info():
     return jsonify({'message': 'you modify the worker info'})
 
 
-@api.route('/user/', methods=['GET'])
+@api.route('/user', methods=['GET'])
 def get_worker_info():
     worker = g.current_user
 
