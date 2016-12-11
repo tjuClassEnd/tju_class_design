@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding=utf-8
 
-from datetime import date
+from datetime import date, datetime
 
 from flask import jsonify, request, g
 
@@ -83,6 +83,9 @@ def create_holiday():
         delete_to_db(holiday)
         return bad_request('begin is latter than end')
 
+    if holiday.holiday_time_begin <= datetime.now():
+        return bad_request('begin must latter than todays')
+
     if reason is None or reason == "":
         delete_to_db(holiday)
         return bad_request('you need reason to apply')
@@ -145,6 +148,11 @@ def modify_the_holiday(id):
 
     holiday.holiday_time_begin = holiday_time_begin if holiday_time_begin else old_holiday_begin
     holiday.holiday_time_end = holiday_time_end if holiday_time_end else old_holiday_end
+
+    add_to_db(holiday)
+
+    if holiday.holiday_time_begin < datetime.now():
+        holiday.holiday_time_begin = datetime.now()
 
     add_to_db(holiday)
 
@@ -259,6 +267,10 @@ def create_wordadd():
         delete_to_db(workadd)
         return bad_request('workadd start laster than end')
 
+    if workadd.add_start <= datetime.now():
+        delete_to_db(workadd)
+        return bad_request('workadd start laster than now')
+
     if add_reason is None or add_reason == "":
         delete_to_db(workadd)
         return bad_request('workadd must have reason')
@@ -296,6 +308,8 @@ def modify_the_workadd(id):
     workadd.add_end = add_end
 
     add_to_db(workadd)
+
+
 
     if workadd.add_start > workadd.add_end:
         workadd.add_end = old_end

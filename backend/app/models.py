@@ -222,11 +222,11 @@ class Holiday(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     worker_id = db.Column(db.String(64), db.ForeignKey('worker.id'), primary_key=True)
     type = db.Column(db.Integer, db.ForeignKey('holiday_type.id'), primary_key=True)
-    holiday_time_begin = db.Column(db.Date)
-    holiday_time_end = db.Column(db.Date)
-    apply_time = db.Column(db.Date, default=datetime.utcnow)
+    holiday_time_begin = db.Column(db.DateTime)
+    holiday_time_end = db.Column(db.DateTime)
+    apply_time = db.Column(db.DateTime, default=datetime.utcnow)
     reason = db.Column(db.Text)
-    end_time = db.Column(db.Date)
+    end_time = db.Column(db.DateTime)
 
     '''
     start of apply, set the apply_state:0, apply_ok:0, apply_over: false, apply_end: false
@@ -282,6 +282,7 @@ class WorkAdd(db.Model):
     add_reason = db.Column(db.Text)
     # 0: wait check, -1: not allow, 1: allow
     add_state = db.Column(db.Integer, default=0)
+    type = db.Column(db.Integer, db.ForeignKey('workadd_info.id'), primary_key=True)
 
     def to_json(self):
         json_workadd = {
@@ -291,7 +292,8 @@ class WorkAdd(db.Model):
             'workadd_start_time': self.add_start,
             'workadd_end_time': self.add_end,
             'workadd_reason': self.add_reason,
-            'workadd_add_state': self.add_state
+            'workadd_add_state': self.add_state,
+            'workadd_info_id': self.type
         }
         return json_workadd
 
@@ -325,3 +327,24 @@ class Admin(db.Model):
         except:
             return None
         return Admin.query.get(data['id'])
+
+
+class WorkaddInfo(db.Model):
+    __tablename__ = 'workadd_info'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64))
+    workadd_type = db.relationship('WorkAdd', backref='workadd')
+
+    @staticmethod
+    def insert_departments():
+        workadds = {
+            'normal workadd': (1, 'normal workadd'),
+            'special workadd': (2, 'special workadd')
+        }
+
+        for w in workadds:
+            workaddInfo = WorkaddInfo.query.filter_by(name=w).first()
+            if workaddInfo is None:
+                workaddInfo = WorkaddInfo(id=workadds[w][0], name=workadds[w][1])
+            db.session.add(workaddInfo)
+        db.session.commit()

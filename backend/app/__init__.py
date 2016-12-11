@@ -23,4 +23,7 @@ def create_app(config_name):
     from .admin import admin_api as admin_blueprint
     app.register_blueprint(admin_blueprint, url_prefix='/admin')
 
+    from .finance import finace_api as finace_blueprint
+    app.register_blueprint(finace_blueprint, url_prefix='/finace')
+
     return app
