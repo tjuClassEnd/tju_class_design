@@ -11,7 +11,7 @@ from .errors import bad_request, validation_error
 from ..models import Admin, Worker, WorkerDegree, Degree
 
 
-@admin_api.route('/users/')
+@admin_api.route('/workers/')
 def get_worker_info():
     page = request.args.get('page')
     per_page = request.args.get('per_page')
@@ -53,7 +53,7 @@ def get_worker_info():
                     'total_page_num': page_nums})
 
 
-@admin_api.route('/users/', methods=['POST'])
+@admin_api.route('/workers/', methods=['POST'])
 def add_worker():
     json_worker = request.json
     id = json_worker.get('worker_id')
@@ -72,7 +72,7 @@ def add_worker():
     return jsonify({'message': "add the new worker"})
 
 
-@admin_api.route('/users/<string:id>/degree/', methods=["POST"])
+@admin_api.route('/workers/<string:id>/degree/', methods=["POST"])
 def add_degree_to_worker(id):
     json_worker = request.json
     department_id = json_worker.get('degree_department_id')
@@ -86,7 +86,7 @@ def add_degree_to_worker(id):
     return jsonify({'message': 'your add the degree to worker {}'.format(id)})
 
 
-@admin_api.route('/users/<string:id>/', methods=['PUT'])
+@admin_api.route('/workers/<string:id>/', methods=['PUT'])
 def modify_worker_info(id):
     worker = Worker.query.get(id)
 
@@ -127,7 +127,7 @@ def modify_worker_info(id):
     return jsonify({'message': 'you modify the worker info'})
 
 
-@admin_api.route('/users/<string:uid>/department/<int:did>/', methods=['PUT'])
+@admin_api.route('/workers/<string:uid>/department/<int:did>/', methods=['PUT'])
 def modify_worker_degree(uid, did):
     worker_degree = WorkerDegree.query.filter(WorkerDegree.worker_id == uid, WorkerDegree.department_id == did).first()
 

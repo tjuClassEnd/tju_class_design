@@ -146,7 +146,7 @@ def examine_workadd(id):
 
     workadd = WorkAdd.query.filter(WorkAdd.id == id).first()
 
-    if workadd_ok == '0' or workadd_ok == '' or not workadd_ok.isdigit():
+    if workadd_ok not in ['-1', '1']:
         return bad_request('please set the examine')
 
     if workadd is None:
