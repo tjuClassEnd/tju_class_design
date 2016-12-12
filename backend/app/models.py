@@ -86,6 +86,13 @@ class Degree(db.Model):
     def __repr__(self):
         return '<Degree {}>'.format(self.name)
 
+    def to_json(self):
+        degree_info = {
+            'degree_id': self.id,
+            'degree_name': self.name
+        }
+        return degree_info
+
 
 class Department(db.Model):
     __tablename__ = 'department_info'
@@ -108,6 +115,13 @@ class Department(db.Model):
                 department = Department(id=departments[d][0], name=departments[d][1])
             db.session.add(department)
         db.session.commit()
+
+    def to_json(self):
+        department_info = {
+            'department_id': self.id,
+            'department_name': self.name
+        }
+        return department_info
 
 
 class WorkerDegree(db.Model):
@@ -223,6 +237,12 @@ class HolidayType(db.Model):
             db.session.add(holiday_type)
         db.session.commit()
 
+    def to_json(self):
+        holiday_type_info = {
+            'holiday_type_id': self.id,
+            'holiday_type_name': self.name
+        }
+        return holiday_type_info
 
 class Holiday(db.Model):
     __tablename__ = 'holiday'
@@ -356,3 +376,10 @@ class WorkaddInfo(db.Model):
                 workaddInfo = WorkaddInfo(id=workadds[w][0], name=workadds[w][1])
             db.session.add(workaddInfo)
         db.session.commit()
+
+    def to_json(self):
+        workadd_info = {
+           'workadd_type_id': self.id,
+            'workadd_type_name': self.name
+        }
+        return workadd_info

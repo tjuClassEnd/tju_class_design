@@ -29,7 +29,7 @@ class TestingConfig(Config):
 
 
 class ProductionConfig(Config):
-    DEBUG = False
+    DEBUG = True
     SQLALCHEMY_DATABASE_URI = u"mysql+pymysql://root:root@104.160.33.183/ClassDesign?charset=utf8"
 
 
