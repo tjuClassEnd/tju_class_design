@@ -321,7 +321,7 @@ def modify_the_workadd(id):
         workadd.add_reason = add_reason
 
     if add_type:
-        if not WorkaddInfo.query.get(add_type).first():
+        if not WorkaddInfo.query.get(add_type):
             return bad_request('type is error')
         workadd.type = add_type
 
