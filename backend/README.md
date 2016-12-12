@@ -518,11 +518,41 @@ PUT\`服务器ip：服务器端口/api/v1.0/examine/workadds／加班的id
 
 ### admin
 注意这是单独的另外一个url 比如127.0.0.1:5000/admin/xxxx
-- @admin_api.route('/users/')
-	- @admin_api.route('/users/', methods=['POST’]())：字段有：worker\_id,worker_name,worker\_email,worker\_address,password
-	- @admin_api.route('/users/\<string:id\>/degree', methods=["POST”]())，字段有：degree\_department\_id,degree\_degree\_id
-	- @admin_api.route('/users/\<string:id\>', methods=['PUT’]()),字段有：name = worker\_name,worker\_email,worker\_address,worker\_password,worker\_year\_holidays\_residue,worker\_year\_holidays\_use,workAdd\_time
-	- @admin_api.route('/users/\<string:uid\>/department/\<int:did\>', methods=['PUT’]())字段有:worker\_degree\_degree
+
+#### @admin\_api.route('/holidays/')
+search\_begin = request.args.get('search\_begin')  
+search\_end = request.args.get('search\_end')  
+worker\_id = request.args.get('worker\_id')  
+apply\_ok = request.args.get('apply\_ok')  
+apply\_state = request.args.get('apply\_state')  
+apply\_over = request.args.get('apply\_over')  
+apply\_end = request.args.get('apply\_end')  
+holiday\_type = request.args.get('holiday\_type')
+
+#### @admin\_api.route('/holidays/\<int:id\>/', methods=['PUT']())
+holiday\_end = json\_holiday.get('holiday\_end')  
+holiday\_time_begin = json\_holiday.get("holiday\_time\_begin")  
+holiday\_time_end = json\_holiday.get("holiday\_time\_end")  
+holiday\_over = json\_holiday.get('holiday\_over')  
+holiday\_reason = json\_holiday.get('holiday\_reason')  
+holiday\_type = json\_holiday.get('holiday\_type')  
+holiday\_state = json\_holiday.get('holiday\_state')
+
+#### @admin\_api.route('/workadds/')
+search\_begin = request.args.get('search\_begin')  
+search\_end = request.args.get('search\_end')  
+worker\_id = request.args.get('worker\_id')  
+workadd\_type = request.args.get('workadd\_type')  
+workadd\_state = request.args.get('workadd\_state')
+
+#### @admin\_api.route('/workadds/\<int:id\>/', methods=['PUT']())
+add\_start = json\_workadd.get('workadd\_start')  
+add\_end = json\_workadd.get('workadd\_end')  
+add\_reason = json\_workadd.get('workadd\_reason')  
+add\_type = json\_workadd.get('workadd\_type')  
+add\_state = json\_workadd.get('workadd\_state')  
+
+
 
 
 

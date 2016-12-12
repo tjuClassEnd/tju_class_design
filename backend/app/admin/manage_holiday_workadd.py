@@ -134,7 +134,6 @@ def modify_holiday(id):
     return jsonify({'message': 'your modify worker holiday apply'})
 
 
-
 @admin_api.route('/workadds/')
 def get_workadds_with_statement():
     search_begin = request.args.get('search_begin')
