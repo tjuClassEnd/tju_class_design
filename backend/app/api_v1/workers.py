@@ -8,7 +8,7 @@ from flask import jsonify, request, g
 from app.util import add_to_db, delete_to_db, add_residue, sub_residue
 from . import api
 from .errors import bad_request
-from ..models import Holiday, WorkAdd, HolidayType
+from ..models import Holiday, WorkAdd, HolidayType, WorkaddInfo
 
 
 @api.route('/worker/holidays/')
@@ -253,14 +253,15 @@ def get_workadds_info():
 
 @api.route('/worker/workadds/', methods=['POST'])
 def create_wordadd():
-    json_holiday = request.json
+    json_workadd = request.json
     worker_id = g.current_user.id
-    add_start = json_holiday.get('workadd_time_begin')
-    add_end = json_holiday.get('workadd_time_end')
-    add_reason = json_holiday.get('workadd_reason')
+    add_start = json_workadd.get('workadd_start')
+    add_end = json_workadd.get('workadd_end')
+    add_reason = json_workadd.get('workadd_reason')
+    add_type = json_workadd.get('workadd_type')
 
     workadd = WorkAdd(worker_id=worker_id, add_start=add_start, add_end=add_end, add_reason=add_reason,
-                      apply_time=date.today())
+                      apply_time=date.today(), type=add_type)
     add_to_db(workadd)
 
     if workadd.add_start > workadd.add_end:
@@ -297,6 +298,7 @@ def modify_the_workadd(id):
     add_start = json_workadd.get('workadd_start')
     add_end = json_workadd.get('workadd_end')
     add_reason = json_workadd.get('workadd_reason')
+    add_type = json_workadd.get('workadd_type')
 
     add_end = add_end if add_end else workadd.add_end
     add_start = add_start if add_start else workadd.add_start
@@ -309,8 +311,6 @@ def modify_the_workadd(id):
 
     add_to_db(workadd)
 
-
-
     if workadd.add_start > workadd.add_end:
         workadd.add_end = old_end
         workadd.add_start = old_start
@@ -319,6 +319,11 @@ def modify_the_workadd(id):
 
     if add_reason:
         workadd.add_reason = add_reason
+
+    if add_type:
+        if not WorkaddInfo.query.get(add_type).first():
+            return bad_request('type is error')
+        workadd.type = add_type
 
     workadd.add_state = 0
 

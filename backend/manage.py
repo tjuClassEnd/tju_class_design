@@ -7,7 +7,7 @@ from flask_migrate import Migrate, MigrateCommand
 from app import create_app, db
 from app.models import Degree, Department, WorkerDegree, Worker, HolidayType, Holiday, Admin, WorkaddInfo
 
-app = create_app('production')
+app = create_app('default')
 manager = Manager(app)
 migrate = Migrate(app, db)
 

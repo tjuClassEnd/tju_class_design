@@ -287,10 +287,11 @@ class WorkAdd(db.Model):
     def to_json(self):
         json_workadd = {
             'workadd_id': self.id,
+            'workadd_type': self.type,
             'workadd_worker_id': self.worker_id,
             'workadd_apply_time': self.apply_time,
-            'workadd_start_time': self.add_start,
-            'workadd_end_time': self.add_end,
+            'workadd_start': self.add_start,
+            'workadd_end': self.add_end,
             'workadd_reason': self.add_reason,
             'workadd_add_state': self.add_state,
             'workadd_info_id': self.type
