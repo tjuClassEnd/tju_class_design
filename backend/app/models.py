@@ -3,11 +3,18 @@
 
 from datetime import datetime
 
-from flask import current_app, url_for
+from flask import current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 from . import db
+
+
+def dump_datetime(value):
+    """Deserialize datetime object into string form for JSON processing."""
+    if value is None:
+        return None
+    return value.strftime("%Y-%m-%d") + ' ' + value.strftime("%H:%M:%S")
 
 
 class Permission:
@@ -259,11 +266,11 @@ class Holiday(db.Model):
             'holiday_id': self.id,
             'holiday_worker_id': self.worker_id,
             'holiday_type': self.type,
-            'holiday_time_begin': self.holiday_time_begin.isoformat(),
-            'holiday_time_end': self.holiday_time_end.isoformat(),
-            'holiday_apply_time': self.apply_time,
+            'holiday_time_begin': dump_datetime(self.holiday_time_begin),
+            'holiday_time_end': dump_datetime(self.holiday_time_end),
+            'holiday_apply_time': dump_datetime(self.apply_time),
             'holiday_reason': self.reason,
-            'holiday_end_time': self.end_time,
+            'holiday_end_time': dump_datetime(self.end_time),
             'holiday_apply_state': self.apply_state,
             'holiday_apply_ok': self.apply_ok,
             'holiday_app_over': self.apply_over,
@@ -289,9 +296,9 @@ class WorkAdd(db.Model):
             'workadd_id': self.id,
             'workadd_type': self.type,
             'workadd_worker_id': self.worker_id,
-            'workadd_apply_time': self.apply_time,
-            'workadd_start': self.add_start,
-            'workadd_end': self.add_end,
+            'workadd_apply_time': dump_datetime(self.apply_time),
+            'workadd_start': dump_datetime(self.add_start),
+            'workadd_end': dump_datetime(self.add_end),
             'workadd_reason': self.add_reason,
             'workadd_add_state': self.add_state,
             'workadd_info_id': self.type
