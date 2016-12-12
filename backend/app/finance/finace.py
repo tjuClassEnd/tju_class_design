@@ -8,10 +8,10 @@ from flask import jsonify, request, g
 from app.util import add_to_db, delete_to_db, add_residue, sub_residue
 from . import finace_api
 from .errors import bad_request, validation_error
-from ..models import Admin, Worker, WorkerDegree, Degree, WorkAdd, WorkaddInfo
+from ..models import Admin, Worker, HolidayType, Degree, WorkAdd, WorkaddInfo, Holiday
 
 
-@finace_api.route('/users/<string:id>')
+@finace_api.route('/worker/<string:id>/workadd')
 def get_workeradds_info(id):
     worker = Worker.query.get(id)
 
@@ -54,3 +54,49 @@ def get_workeradds_info(id):
     return jsonify({'total_add(hours)': total_time.total_seconds() / 3600,
                     'specific_add(hours)': workadd_info,
                     'workadds': info})
+
+
+@finace_api.route('/worker/<string:id>/holiday')
+def get_holidays_info(id):
+    worker = Worker.query.get(id)
+
+    if not worker:
+        return bad_request('don\' exit the worker')
+
+    search_begin = request.args.get('search_begin')
+    search_end = request.args.get('search_end')
+
+    search_begin = datetime.strptime(search_begin, '%Y-%m-%d') if search_begin else None
+    search_end = datetime.strptime(search_end, '%Y-%m-%d') if search_end else None
+
+    query = Holiday.query.filter(Holiday.worker_id == worker.id, Holiday.apply_ok == 1)
+
+    if search_begin:
+        query = query.filter(Holiday.holiday_time_begin >= search_begin)
+    if search_end:
+        query = query.filter(Holiday.holiday_time_end <= search_end)
+
+    holidays = query.all()
+
+    total_time = timedelta()
+    for holiday in holidays:
+        total_time += (holiday.holiday_time_end - holiday.holiday_time_begin)
+
+    holiday_info = []
+    holiday_types = HolidayType.query.all()
+    for holiday_type in holiday_types:
+        holiday_info.append([holiday_type.id, holiday_type.name, 0])
+
+    for holiday in holidays:
+        for holiday_one in holiday_info:
+            if holiday.type == holiday_one[0]:
+                holiday_one[2] += (holiday.holiday_time_end - holiday.holiday_time_begin).total_seconds() / 3600
+
+    info = []
+    for holiday in holidays:
+        info.append(holiday.to_json())
+
+    return jsonify({'total_holidays(hours)': total_time.total_seconds() / 3600,
+                    'specific_holiday(hours)': holiday_info,
+                    'holidays': info})
+
