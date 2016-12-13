@@ -177,7 +177,7 @@ def get_workadds_with_statement():
 
 @admin_api.route('/workadds/<int:id>/', methods=['PUT'])
 def modify_workadd(id):
-    workadd = WorkAdd.query.get(id)
+    workadd = WorkAdd.query.filter(WorkAdd.id == id).first()
 
     if workadd is None:
         return bad_request("the workadd isn't exit")
