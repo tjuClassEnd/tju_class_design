@@ -74,6 +74,15 @@ def create_holiday():
     reason = json_holiday.get('holiday_reason')
     worker_id = g.current_user.id
 
+    male = g.current_user.male
+    print(male)
+
+    if(male == True and holiday_type == str(HolidayType.query.filter(HolidayType.name == '产假').first().id)):
+        return bad_request("男性不能请产假")
+
+    if (male == False and holiday_type == str(HolidayType.query.filter(HolidayType.name == '陪产假').first().id)):
+        return bad_request("女性不能请陪产假")
+
     holiday = Holiday(type=holiday_type, worker_id=worker_id, holiday_time_begin=holiday_time_begin,
                       holiday_time_end=holiday_time_end, apply_time=date.today(), reason=reason)
 
@@ -142,6 +151,14 @@ def modify_the_holiday(id):
     holiday_time_begin = json_holiday.get("holiday_time_begin")
     holiday_time_end = json_holiday.get("holiday_time_end")
     type = json_holiday.get('holiday_type')
+
+    male = g.current_user.male
+
+    if (male == True and type == str(HolidayType.query.filter(HolidayType.name == '产假').first().id)):
+        return bad_request("男性不能请产假")
+
+    if (male == False and type == str(HolidayType.query.filter(HolidayType.name == '陪产假').first().id)):
+        return bad_request("女性不能请陪产假")
 
     old_holiday_begin = holiday.holiday_time_begin
     old_holiday_end = holiday.holiday_time_end

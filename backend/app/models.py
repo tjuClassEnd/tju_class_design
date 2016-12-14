@@ -103,10 +103,10 @@ class Department(db.Model):
     @staticmethod
     def insert_departments():
         departments = {
-            'Engineering Department': (1, 'Engineering Department'),
-            'Research Department': (2, 'Research Department'),
-            'Human Resources Department': (3, 'Human Resources Department'),
-            'Ministry of foreign trade and business': (4, 'Ministry of foreign trade and business')
+            'Engineering Department': (1, '工程部'),
+            'Research Department': (2, '科研部'),
+            'Human Resources Department': (3, '人力资源部'),
+            'Ministry of foreign trade and business': (4, '对外商务部')
         }
 
         for d in departments:
@@ -164,6 +164,7 @@ class Worker(db.Model):
     year_holidays_residue = db.Column(db.Integer, default=7)
     year_holidays_used = db.Column(db.Integer, default=0)
     workAdd_time = db.Column(db.Integer, default=0)
+    male = db.Column(db.BOOLEAN, default=True)
     degree_infos = db.relationship('WorkerDegree', backref='worker')
     holidays = db.relationship('Holiday', backref='worker')
     workadds = db.relationship('WorkAdd', backref='worker')
@@ -207,6 +208,7 @@ class Worker(db.Model):
             'worker_year_holidays_used': self.year_holidays_used,
             'worker_workAdd_time': self.workAdd_time,
             'worker_degree': info,
+            'worker_male': self.male
         }
         return json_worker
 
@@ -220,14 +222,14 @@ class HolidayType(db.Model):
     @staticmethod
     def insert_holiday_types():
         holiday_types = {
-            'Leave on business': (1, 'Leave on business'),
-            'Annual leave': (2, 'Annual leave'),
-            'Sick leave': (3, 'Sick leave'),
-            'Funeral leave': (4, 'Funeral leave'),
-            'Compassionate leave': (5, 'compassionate leave'),
-            'Maternity leave': (6, 'Maternity leave'),
-            'Marriage leave': (7, 'Marriage leave'),
-            'Maternity leave': (8, 'Maternity leave')
+            'Leave on business': (1, '因公请假'),
+            'Annual leave': (2, '年假'),
+            'Sick leave': (3, '病假'),
+            'Funeral leave': (4, '事假'),
+            'Compassionate leave': (5, '产假'),
+            'Maternity leave': (6, '婚假'),
+            'Marriage leave': (7, '陪产假'),
+            'bad leave': (8, '丧假')
         }
 
         for h in holiday_types:
