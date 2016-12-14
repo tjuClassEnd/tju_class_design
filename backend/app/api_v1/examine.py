@@ -171,7 +171,7 @@ def examine_workadd(id):
         if workadd_degree_id == current_degree_id - 1:
             workadd.add_state = workadd_ok
             if workadd_ok == '1':
-                workadd.worker.workAdd_time += (workadd.add_end - workadd.add_start).days
+                workadd.worker.workAdd_time += (workadd.add_end - workadd.add_start).total_seconds() / 3600
                 # print(type(workadd.add_end - workadd.add_start).days)
             add_to_db(workadd)
             return jsonify({
