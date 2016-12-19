@@ -260,9 +260,9 @@ def get_workadds_info():
     page_nums = workadds.pages
     workadds_info = workadds.items
     if not workadds_info:
-        holiday_info = []
+        workadds_info = []
     info = []
-    for workadd in holiday_info:
+    for workadd in workadds_info:
         info.append(workadd.to_json())
     return jsonify({'workadds': info,
                     'total_page_num': page_nums})
