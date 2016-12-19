@@ -321,7 +321,7 @@ def modify_the_workadd(id):
     if add_over:
         workadd.add_state == -1
         add_to_db(workadd)
-        return jsonify({'message': 'you modify your workadd'})
+        return jsonify({'message': 'you cancel your workadd'})
 
     add_end = add_end if add_end else workadd.add_end
     add_start = add_start if add_start else workadd.add_start
