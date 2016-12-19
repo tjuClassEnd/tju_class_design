@@ -8,7 +8,7 @@ from flask import jsonify
 from app import create_app, db
 from app.models import Degree, Department, WorkerDegree, Worker, HolidayType, Holiday, Admin, WorkaddInfo
 
-app = create_app('production')
+app = create_app('testing')
 manager = Manager(app)
 migrate = Migrate(app, db)
 
@@ -33,11 +33,18 @@ def server_error(error):
     return response
 
 
+@app.errorhandler(404)
+def server_error(error):
+    response = jsonify({'error': 'the web page don\'t exit'})
+    response.status_code = 404
+    return response
+
+
 @manager.command
 def test():
     """Run the unit tests."""
     import unittest
-    tests = unittest.TestLoader().discover('tests', pattern='worker_apply_test.py')
+    tests = unittest.TestLoader().discover('tests', pattern='*.py')
     unittest.TextTestRunner(verbosity=2).run(tests)
 
 

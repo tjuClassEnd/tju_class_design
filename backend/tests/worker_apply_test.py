@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # encoding=utf-8
-1
 import unittest
 from flask import current_app
 from app import create_app, db
@@ -27,7 +26,8 @@ class BasicsTestCase(unittest.TestCase):
     def test_create_worker(self):
         w = Worker(id='30132180123', name='hss', email='xxx@tju.edu.cn', address='tju',
                    password='123')
-        # db.session.add(w)
+        db.session.add(w)
+        db.session.commit()
 
 
         # test the password
@@ -37,7 +37,8 @@ class BasicsTestCase(unittest.TestCase):
         # test the token
         token = w.generate_auth_token(expiration=1000)
         ver_w = w.verify_auth_token(token)
-        assert ver_w == Worker.query.get('30132180xx')
+        assert ver_w != Worker.query.get('30132180xx')
+        assert ver_w == Worker.query.get('30132180123')
 
         db.session.add(w)
         db.session.commit()
@@ -45,9 +46,6 @@ class BasicsTestCase(unittest.TestCase):
         d = WorkerDegree(worker_id=w.id, department_id=1)
         db.session.add(d)
         db.session.commit()
-
-
-    # def test_apply(self):
 
 
 
