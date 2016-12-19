@@ -319,7 +319,7 @@ def modify_the_workadd(id):
     add_over = json_workadd.get('workadd_over')
 
     if add_over:
-        workadd.add_state == -1
+        workadd.add_state = -1
         add_to_db(workadd)
         return jsonify({'message': 'you cancel your workadd'})
 
