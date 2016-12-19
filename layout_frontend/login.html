@@ -16,7 +16,7 @@
         ===
     -->
     <meta charset="utf-8">
-    <title>Free HTML5 Bootstrap Admin Template</title>
+    <title>LEAVE APPLICATION</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Charisma, a fully featured, responsive, HTML5, Bootstrap admin template.">
     <meta name="author" content="Muhammad Usman">
@@ -63,34 +63,40 @@
         <!--/span-->
     </div><!--/row-->
 
-    <div class="row">
+    <div class="row" id="app">
         <div class="well col-md-5 center login-box">
             <div class="alert alert-info">
                 Please login with your Username and Password.
             </div>
-            <form class="form-horizontal" action="personal_info_just_layout.html" method="post">
+            <form class="form-horizontal" @submit.prevent="login">
                 <fieldset>
                     <div class="input-group input-group-lg">
                         <span class="input-group-addon"><i class="glyphicon glyphicon-user red"></i></span>
-                        <input type="text" class="form-control" placeholder="Username">
+                        <input type="text" class="form-control" placeholder="Username" v-model="item.username">
                     </div>
                     <div class="clearfix"></div><br>
 
                     <div class="input-group input-group-lg">
                         <span class="input-group-addon"><i class="glyphicon glyphicon-lock red"></i></span>
-                        <input type="password" class="form-control" placeholder="Password">
+                        <input type="password" class="form-control" placeholder="Password" v-model="item.password">
                     </div>
                     <div class="clearfix"></div>
 
                     <div class="input-prepend">
                         <label class="remember" for="remember"><input type="checkbox" id="remember"> Remember me</label>
                     </div>
+
+                    <div class="alert" v-bind:class="tip_class" v-if="tip_show" v-cloak>
+                        <button type="button" class="close" @click="tip_show=false">×</button>
+                        <strong>{{ tip_message1 }}</strong> {{ tip_message2 }}
+                    </div>
+
                     <div class="clearfix"></div>
 
-                    <p class="center col-md-5">
+                        <p class="center col-md-5">
 
-                        <button type="submit" class="btn btn-primary">Login</button>
-                    </p>
+                            <button type="submit" class="btn btn-primary">Login</button>
+                        </p>
                 </fieldset>
             </form>
         </div>
@@ -133,8 +139,13 @@
 <!-- history.js for cross-browser state change on ajax -->
 <script src="js/jquery.history.js"></script>
 <!-- application script for Charisma demo -->
+
 <script src="js/charisma.js"></script>
 
+<script src="js/vue.js"></script>
+<script src="js/vue-resource.js"></script>
+<script src="js/Lib.js"></script>
+<script src="js/login.js"></script>
 
 </body>
 </html>
