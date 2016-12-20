@@ -155,10 +155,10 @@ def modify_the_holiday(id):
 
     male = g.current_user.male
 
-    if (male == True and type == str(HolidayType.query.filter(HolidayType.name == '产假').first().id)):
+    if(male == True and type == str(HolidayType.query.filter(HolidayType.name == '产假').first().id)):
         return bad_request("男性不能请产假")
 
-    if (male == False and type == str(HolidayType.query.filter(HolidayType.name == '陪产假').first().id)):
+    if(male == False and type == str(HolidayType.query.filter(HolidayType.name == '陪产假').first().id)):
         return bad_request("女性不能请陪产假")
 
     old_holiday_begin = holiday.holiday_time_begin
@@ -168,6 +168,16 @@ def modify_the_holiday(id):
     holiday.holiday_time_end = holiday_time_end if holiday_time_end else old_holiday_end
 
     add_to_db(holiday)
+
+    holiday_over = json_holiday.get('holiday_over')
+
+    # cancel the apply holiday
+    if holiday_over:
+        if holiday.type == 2:
+            add_residue(holiday.worker, (old_holiday_end - old_holiday_begin).days)
+        holiday.apply_over = True
+        add_to_db(holiday)
+        return jsonify({'message': 'you cancle your holiday'})
 
     if holiday.holiday_time_begin < datetime.now():
         holiday.holiday_time_begin = datetime.now()
@@ -208,14 +218,6 @@ def modify_the_holiday(id):
 
     if json_holiday.get('holiday_reason'):
         holiday.reason = json_holiday.get('holiday_reason')
-
-    holiday_over = json_holiday.get('holiday_over')
-
-    # cancel the apply holiday
-    if holiday_over:
-        if holiday.type == 2:
-            add_residue(holiday.worker, old_long)
-        holiday.apply_over = True
 
     if HolidayType.query.get(type):
         holiday.type = type
