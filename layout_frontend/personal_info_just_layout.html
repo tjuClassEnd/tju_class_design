@@ -204,7 +204,7 @@
                         <strong>职务： </strong> {{ degree[user.worker_degree[0].degree_degree_id-1].degree_name }}
                         <br>
                     </li>
-                    <li>
+                    <li v-if="user.worker_degree.length==1">
                         <strong>部门： </strong> {{ department[user.worker_degree[0].degree_department_id-1].department_name }}
                         <br>
                     </li>
@@ -213,7 +213,7 @@
                         <br>
                     </li>
                     <li>
-                        <strong>已用年假： </strong> {{ user.worker_year_holidays_used * (-1) }}
+                        <strong>已用年假： </strong> {{ user.worker_year_holidays_used  }}
                         <br>
                     </li>
                     <li>

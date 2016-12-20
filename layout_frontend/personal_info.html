@@ -204,7 +204,7 @@
                         <label for="name">职务</label>
                         <input type="text" class="form-control" id="exampleInputPassword1" placeholder="" disabled="disabled" v-model="degree[worker.worker_degree[0].degree_degree_id-1].degree_name">
                     </div> 
-                    <div class="form-group">
+                    <div class="form-group" v-if="user.worker_degree.length==1">
                         <label for="name">部门</label>
                         <input type="text" class="form-control" id="exampleInputPassword1" placeholder="" disabled="disabled" v-model="department[worker.worker_degree[0].degree_department_id-1].department_name">
                     </div>

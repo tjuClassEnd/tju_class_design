@@ -22,6 +22,7 @@ var over_apply = new Vue({
         },
     	apply: function(){
             // alert(this.item.holiday_time_begin)
+            this.item.workadd_type = this.workadd_type.toString();
             this.$http.post(this.apiUrl, this.item).then((response) => {
                     // 响应成功回调
                     noty({"text":"Apply successfully!","layout":"top","type":"information"});

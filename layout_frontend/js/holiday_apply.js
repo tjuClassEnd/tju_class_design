@@ -22,6 +22,7 @@ var holiday_apply = new Vue({
         },
     	apply: function(){
             // alert(this.item.holiday_time_begin)
+            this.item.holiday_type = this.item.holiday_type.toString();
             this.$http.post(this.apiUrl, this.item).then((response) => {
                     // 响应成功回调
                     noty({"text":"Apply successfully!","layout":"top","type":"information"});
@@ -42,6 +43,22 @@ var holiday_apply = new Vue({
                     noty({"text": response.data.message, "layout":"top","type":"error"});
                 // 响应错误回调
             });
+        }
+    },
+    watch: {
+        item:{
+            handler: function (val, oldVal) { 
+                if(val.holiday_type == 2){       
+                    $(".form_datetime").datetimepicker('remove');        
+                    $(".form_datetime").datetimepicker({minView: "month",  
+                            format: 'yyyy-mm-dd'});
+                }
+                else{
+                    $(".form_datetime").datetimepicker('remove');        
+                    $(".form_datetime").datetimepicker({ format: 'yyyy-mm-dd hh:ii:ss'});
+                }
+             },
+            deep: true
         }
     }
 });

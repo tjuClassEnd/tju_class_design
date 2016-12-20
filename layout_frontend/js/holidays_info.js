@@ -106,6 +106,7 @@ var holidays_info = new Vue({
             // alert(this.apiUrl + this.item.holiday_id)
             // alert(this.item.holiday_reason)
             var vm = this;
+            this.item.holiday_type = this.item.holiday_type.toString();
             this.$http.put(this.apiUrl + this.item.holiday_id + "/", this.item)
                             .then((response) => {
                                 noty({"text": 'Modify Successfully', "layout":"top","type":"information"});
@@ -135,7 +136,21 @@ var holidays_info = new Vue({
       },
       currentPage: function(val) {
         this.get_holidays();
-      }
+      },
+      item:{
+            handler: function (val, oldVal) { 
+                if(val.holiday_type == 2){       
+                    $(".form_datetime").datetimepicker('remove');        
+                    $(".form_datetime").datetimepicker({minView: "month",  
+                            format: 'yyyy-mm-dd'});
+                }
+                else{
+                    $(".form_datetime").datetimepicker('remove');        
+                    $(".form_datetime").datetimepicker({ format: 'yyyy-mm-dd hh:ii:ss'});
+                }
+             },
+            deep: true
+        }
     }
 });
 

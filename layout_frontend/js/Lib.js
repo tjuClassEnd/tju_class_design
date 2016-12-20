@@ -19,7 +19,21 @@ var get_info = function(){
             });
 		};
 
-
+Date.prototype.Format = function (fmt) { //author: meizz 
+    var o = {
+        "M+": this.getMonth() + 1, //月份 
+        "d+": this.getDate(), //日 
+        "h+": this.getHours(), //小时 
+        "m+": this.getMinutes(), //分 
+        "s+": this.getSeconds(), //秒 
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+        "S": this.getMilliseconds() //毫秒 
+    };
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+    if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+}
 // Vue.http.options.emulateJSON = true;
 if(sessionStorage.getItem('token') != null)
 	Vue.http.headers.common['Authorization'] = sessionStorage.getItem("token");
@@ -27,7 +41,7 @@ if(sessionStorage.getItem('token') != null)
 
 Vue.component('simple-grid', {
     template: '#grid-template',
-    props: ['dataList', 'columns', 'options'],
+    props: ['dataList', 'columns', 'options', 'male', 'department', 'degree'],
     methods: {
         loadEntry1: function(key) {
             this.$dispatch('load-entry1', key)
@@ -44,7 +58,10 @@ Vue.component('simple-grid', {
            }
            else{
               if(ok == 1)
-                return "已通过";
+                if(end)
+                  return "待销假";
+                else
+                  return "已通过";
               else if(ok == 0)
                 return (state+1) + "级审批";
               else
@@ -65,7 +82,10 @@ Vue.component('simple-grid', {
            }
            else{
               if(ok == 1)
-                return {'label-success': true};
+                if(end)
+                  return {'label-warning': true};
+                else
+                  return {'label-success': true};
               else if(ok == 0)
                 return {'label-warning': true};
               else
