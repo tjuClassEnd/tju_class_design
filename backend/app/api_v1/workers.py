@@ -93,6 +93,7 @@ def create_holiday():
         return bad_request('begin is latter than end')
 
     if holiday.holiday_time_begin <= datetime.now():
+        delete_to_db(holiday)
         return bad_request('begin must latter than todays')
 
     if reason is None or reason == "":
