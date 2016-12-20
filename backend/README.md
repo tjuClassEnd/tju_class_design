@@ -516,11 +516,6 @@ PUT\`服务器ip：服务器端口/api/v1.0/examine/workadds／加班的id
 	
 	    return jsonify(worker.to_json())
 
-
-### normal info
-
-
-
 ### admin
 注意这是单独的另外一个url 比如127.0.0.1:5000/admin/xxxx
 
@@ -556,6 +551,11 @@ add\_end = json\_workadd.get('workadd\_end')
 add\_reason = json\_workadd.get('workadd\_reason')  
 add\_type = json\_workadd.get('workadd\_type')  
 add\_state = json\_workadd.get('workadd\_state')  
+
+
+
+
+
 
 
 

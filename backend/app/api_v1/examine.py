@@ -284,7 +284,7 @@ def examine_over_holiday(id):
         if current_degree_id - 1 == holiday_degree_id:
             holiday.apply_end = True
             holiday.apply_over = True
-            holiday.end_time = datetime.date.today()
+            holiday.end_time = datetime.datetime.now()
             add_to_db(holiday)
             return jsonify({
                 'message': 'your examine over the holiday'

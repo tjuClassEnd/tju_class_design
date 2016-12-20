@@ -85,7 +85,7 @@ def create_holiday():
         return bad_request("女性不能请陪产假")
 
     holiday = Holiday(type=holiday_type, worker_id=worker_id, holiday_time_begin=holiday_time_begin,
-                      holiday_time_end=holiday_time_end, apply_time=date.today(), reason=reason)
+                      holiday_time_end=holiday_time_end, apply_time=datetime.now(), reason=reason)
 
     add_to_db(holiday)
 
@@ -283,7 +283,7 @@ def create_wordadd():
     add_type = json_workadd.get('workadd_type')
 
     workadd = WorkAdd(worker_id=worker_id, add_start=add_start, add_end=add_end, add_reason=add_reason,
-                      apply_time=date.today(), type=add_type)
+                      apply_time=datetime.now(), type=add_type)
     add_to_db(workadd)
 
     if workadd.add_start > workadd.add_end:
