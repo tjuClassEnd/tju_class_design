@@ -92,7 +92,7 @@ def delete_degree_to_worker(id):
     department_id = json_worker.get('degree_department_id')
     worker_id = id
 
-    woker = Worker.quert.filter(Worker.id == worker_id).first()
+    woker = Worker.query.filter(Worker.id == worker_id).first()
 
     if not woker:
         return jsonify({'message': 'the user isn\'t exit'})
