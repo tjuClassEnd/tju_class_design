@@ -86,10 +86,9 @@ def add_degree_to_worker(id):
     return jsonify({'message': 'your add the degree to worker {}'.format(id)})
 
 
-@admin_api.route('/workers/<string:id>/degree/', methods=["DELETE"])
-def delete_degree_to_worker(id):
-    json_worker = request.json
-    department_id = json_worker.get('degree_department_id')
+@admin_api.route('/workers/<string:id>/degree/<string:department_del>', methods=["DELETE"])
+def delete_degree_to_worker(id, department_del):
+    department_id = department_del
     worker_id = id
 
     woker = Worker.query.filter(Worker.id == worker_id).first()
@@ -99,6 +98,9 @@ def delete_degree_to_worker(id):
 
     worker_degree = WorkerDegree.query.filter(WorkerDegree.worker_id == worker_id,
                                               WorkerDegree.department_id == department_id).first()
+
+    if not worker_degree:
+        return jsonify({'message': 'the user not in the department'})
 
     delete_to_db(worker_degree)
 
