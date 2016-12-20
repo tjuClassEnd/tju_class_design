@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- saved from url=(0257)file:///E:/%E6%97%A5%E8%AE%B0/%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3/%E5%A4%A9%E5%A4%A7/%E5%AD%A6%E4%B9%A0%E6%96%87%E4%BB%B6/%E5%A4%A7%E5%9B%9B%E4%B8%8A/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1/%E5%89%8D%E7%AB%AF/charisma-master/charisma-master/personal_info.html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <!--
         ===
@@ -16,7 +15,7 @@
         ===
     -->
     
-    <title>Free HTML5 Bootstrap Admin Template</title>
+    <title>LEAVE APPLICATION</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Charisma, a fully featured, responsive, HTML5, Bootstrap admin template.">
     <meta name="author" content="Muhammad Usman">
@@ -40,7 +39,7 @@
     <link href="./personal_info_just_layout_files/animate.min.css" rel="stylesheet">
 
     <!-- jQuery -->
-    <script src="./personal_info_just_layout_files/jquery.min.js.下载"></script>
+    <script src="./personal_info_just_layout_files/jquery.min.js"></script>
 
     <!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -48,7 +47,7 @@
     <![endif]-->
 
     <!-- The fav icon -->
-    <link rel="shortcut icon" href="file:///E:/%E6%97%A5%E8%AE%B0/%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3/%E5%A4%A9%E5%A4%A7/%E5%AD%A6%E4%B9%A0%E6%96%87%E4%BB%B6/%E5%A4%A7%E5%9B%9B%E4%B8%8A/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1/%E5%89%8D%E7%AB%AF/charisma-master/charisma-master/img/favicon.ico">
+    <link rel="shortcut icon" href="img/favicon.ico">
 
 </head>
 
@@ -63,19 +62,19 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="file:///E:/%E6%97%A5%E8%AE%B0/%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3/%E5%A4%A9%E5%A4%A7/%E5%AD%A6%E4%B9%A0%E6%96%87%E4%BB%B6/%E5%A4%A7%E5%9B%9B%E4%B8%8A/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1/%E5%89%8D%E7%AB%AF/charisma-master/charisma-master/index.html"> 
+            <a class="navbar-brand" href="personal_info_just_layout.html"> 
                 <span>Leave Appication</span></a>
 
             <!-- user dropdown starts -->
-            <div class="btn-group pull-right">
+            <div class="btn-group pull-right" id="share_info" v-cloak>
                 <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                    <i class="glyphicon glyphicon-user"></i><span class="hidden-sm hidden-xs"> admin</span>
+                    <i class="glyphicon glyphicon-user"></i><span class="hidden-sm hidden-xs"> {{ user }} </span>
                     <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
                     <li><a href="personal_info_just_layout.html#">Profile</a></li>
                     <li class="divider"></li>
-                    <li><a href="login.html">Logout</a></li>
+                    <li><a @click="logout">Logout</a></li>
                 </ul>
             </div>
             <!-- user dropdown ends -->
@@ -87,15 +86,15 @@
                     <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" id="themes">
-                    <li><a data-value="classic" href="file:///E:/%E6%97%A5%E8%AE%B0/%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3/%E5%A4%A9%E5%A4%A7/%E5%AD%A6%E4%B9%A0%E6%96%87%E4%BB%B6/%E5%A4%A7%E5%9B%9B%E4%B8%8A/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1/%E5%89%8D%E7%AB%AF/charisma-master/charisma-master/form.html#"><i class="whitespace"></i> Classic</a></li>
-                    <li><a data-value="cerulean" href="file:///E:/%E6%97%A5%E8%AE%B0/%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3/%E5%A4%A9%E5%A4%A7/%E5%AD%A6%E4%B9%A0%E6%96%87%E4%BB%B6/%E5%A4%A7%E5%9B%9B%E4%B8%8A/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1/%E5%89%8D%E7%AB%AF/charisma-master/charisma-master/form.html#"><i class="glyphicon glyphicon-ok"></i> Cerulean</a></li>
-                    <li><a data-value="cyborg" href="file:///E:/%E6%97%A5%E8%AE%B0/%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3/%E5%A4%A9%E5%A4%A7/%E5%AD%A6%E4%B9%A0%E6%96%87%E4%BB%B6/%E5%A4%A7%E5%9B%9B%E4%B8%8A/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1/%E5%89%8D%E7%AB%AF/charisma-master/charisma-master/form.html#"><i class="whitespace"></i> Cyborg</a></li>
-                    <li><a data-value="simplex" href="file:///E:/%E6%97%A5%E8%AE%B0/%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3/%E5%A4%A9%E5%A4%A7/%E5%AD%A6%E4%B9%A0%E6%96%87%E4%BB%B6/%E5%A4%A7%E5%9B%9B%E4%B8%8A/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1/%E5%89%8D%E7%AB%AF/charisma-master/charisma-master/form.html#"><i class="whitespace"></i> Simplex</a></li>
-                    <li><a data-value="darkly" href="file:///E:/%E6%97%A5%E8%AE%B0/%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3/%E5%A4%A9%E5%A4%A7/%E5%AD%A6%E4%B9%A0%E6%96%87%E4%BB%B6/%E5%A4%A7%E5%9B%9B%E4%B8%8A/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1/%E5%89%8D%E7%AB%AF/charisma-master/charisma-master/form.html#"><i class="whitespace"></i> Darkly</a></li>
-                    <li><a data-value="lumen" href="file:///E:/%E6%97%A5%E8%AE%B0/%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3/%E5%A4%A9%E5%A4%A7/%E5%AD%A6%E4%B9%A0%E6%96%87%E4%BB%B6/%E5%A4%A7%E5%9B%9B%E4%B8%8A/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1/%E5%89%8D%E7%AB%AF/charisma-master/charisma-master/form.html#"><i class="whitespace"></i> Lumen</a></li>
-                    <li><a data-value="slate" href="file:///E:/%E6%97%A5%E8%AE%B0/%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3/%E5%A4%A9%E5%A4%A7/%E5%AD%A6%E4%B9%A0%E6%96%87%E4%BB%B6/%E5%A4%A7%E5%9B%9B%E4%B8%8A/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1/%E5%89%8D%E7%AB%AF/charisma-master/charisma-master/form.html#"><i class="whitespace"></i> Slate</a></li>
-                    <li><a data-value="spacelab" href="file:///E:/%E6%97%A5%E8%AE%B0/%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3/%E5%A4%A9%E5%A4%A7/%E5%AD%A6%E4%B9%A0%E6%96%87%E4%BB%B6/%E5%A4%A7%E5%9B%9B%E4%B8%8A/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1/%E5%89%8D%E7%AB%AF/charisma-master/charisma-master/form.html#"><i class="whitespace"></i> Spacelab</a></li>
-                    <li><a data-value="united" href="file:///E:/%E6%97%A5%E8%AE%B0/%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3/%E5%A4%A9%E5%A4%A7/%E5%AD%A6%E4%B9%A0%E6%96%87%E4%BB%B6/%E5%A4%A7%E5%9B%9B%E4%B8%8A/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1/%E5%89%8D%E7%AB%AF/charisma-master/charisma-master/form.html#"><i class="whitespace"></i> United</a></li>
+                    <li><a data-value="classic" href="form.html#"><i class="whitespace"></i> Classic</a></li>
+                    <li><a data-value="cerulean" href="form.html#"><i class="glyphicon glyphicon-ok"></i> Cerulean</a></li>
+                    <li><a data-value="cyborg" href="form.html#"><i class="whitespace"></i> Cyborg</a></li>
+                    <li><a data-value="simplex" href="form.html#"><i class="whitespace"></i> Simplex</a></li>
+                    <li><a data-value="darkly" href="form.html#"><i class="whitespace"></i> Darkly</a></li>
+                    <li><a data-value="lumen" href="form.html#"><i class="whitespace"></i> Lumen</a></li>
+                    <li><a data-value="slate" href="form.html#"><i class="whitespace"></i> Slate</a></li>
+                    <li><a data-value="spacelab" href="form.html#"><i class="whitespace"></i> Spacelab</a></li>
+                    <li><a data-value="united" href="form.html#"><i class="whitespace"></i> United</a></li>
                 </ul>
             </div>
             <!-- theme selector ends -->
@@ -105,13 +104,13 @@
                 <li class="dropdown">
                     
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="file:///E:/%E6%97%A5%E8%AE%B0/%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3/%E5%A4%A9%E5%A4%A7/%E5%AD%A6%E4%B9%A0%E6%96%87%E4%BB%B6/%E5%A4%A7%E5%9B%9B%E4%B8%8A/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1/%E5%89%8D%E7%AB%AF/charisma-master/charisma-master/form.html#">Action</a></li>
-                        <li><a href="file:///E:/%E6%97%A5%E8%AE%B0/%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3/%E5%A4%A9%E5%A4%A7/%E5%AD%A6%E4%B9%A0%E6%96%87%E4%BB%B6/%E5%A4%A7%E5%9B%9B%E4%B8%8A/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1/%E5%89%8D%E7%AB%AF/charisma-master/charisma-master/form.html#">Another action</a></li>
-                        <li><a href="file:///E:/%E6%97%A5%E8%AE%B0/%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3/%E5%A4%A9%E5%A4%A7/%E5%AD%A6%E4%B9%A0%E6%96%87%E4%BB%B6/%E5%A4%A7%E5%9B%9B%E4%B8%8A/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1/%E5%89%8D%E7%AB%AF/charisma-master/charisma-master/form.html#">Something else here</a></li>
+                        <li><a href="form.html#">Action</a></li>
+                        <li><a href="form.html#">Another action</a></li>
+                        <li><a href="form.html#">Something else here</a></li>
                         <li class="divider"></li>
-                        <li><a href="file:///E:/%E6%97%A5%E8%AE%B0/%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3/%E5%A4%A9%E5%A4%A7/%E5%AD%A6%E4%B9%A0%E6%96%87%E4%BB%B6/%E5%A4%A7%E5%9B%9B%E4%B8%8A/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1/%E5%89%8D%E7%AB%AF/charisma-master/charisma-master/form.html#">Separated link</a></li>
+                        <li><a href="form.html#">Separated link</a></li>
                         <li class="divider"></li>
-                        <li><a href="file:///E:/%E6%97%A5%E8%AE%B0/%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3/%E5%A4%A9%E5%A4%A7/%E5%AD%A6%E4%B9%A0%E6%96%87%E4%BB%B6/%E5%A4%A7%E5%9B%9B%E4%B8%8A/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1/%E5%89%8D%E7%AB%AF/charisma-master/charisma-master/form.html#">One more separated link</a></li>
+                        <li><a href="form.html#">One more separated link</a></li>
                     </ul>
                 </li>
                 <li>
@@ -170,10 +169,10 @@
             <div>
     <ul class="breadcrumb">
         <li>
-            <a href="file:///E:/%E6%97%A5%E8%AE%B0/%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3/%E5%A4%A9%E5%A4%A7/%E5%AD%A6%E4%B9%A0%E6%96%87%E4%BB%B6/%E5%A4%A7%E5%9B%9B%E4%B8%8A/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1/%E5%89%8D%E7%AB%AF/charisma-master/charisma-master/form.html#">Home</a>
+            <a href="#">Home</a>
         </li>
         <li>
-            <a href="file:///E:/%E6%97%A5%E8%AE%B0/%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3/%E5%A4%A9%E5%A4%A7/%E5%AD%A6%E4%B9%A0%E6%96%87%E4%BB%B6/%E5%A4%A7%E5%9B%9B%E4%B8%8A/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1/%E5%89%8D%E7%AB%AF/charisma-master/charisma-master/form.html#">个人信息</a>
+            <a href="#">个人信息</a>
         </li>
     </ul>
 </div>
@@ -186,40 +185,52 @@
             <div class="box-header well" data-original-title="">
                 <h2><i class="glyphicon glyphicon-edit"></i>员工详情</h2>
                 <div class="box-icon">
-                    <a href="file:///E:/%E6%97%A5%E8%AE%B0/%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3/%E5%A4%A9%E5%A4%A7/%E5%AD%A6%E4%B9%A0%E6%96%87%E4%BB%B6/%E5%A4%A7%E5%9B%9B%E4%B8%8A/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1/%E5%89%8D%E7%AB%AF/charisma-master/charisma-master/form.html#" class="btn btn-setting btn-round btn-default"><i class="glyphicon glyphicon-cog"></i></a>
-                    <a href="file:///E:/%E6%97%A5%E8%AE%B0/%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3/%E5%A4%A9%E5%A4%A7/%E5%AD%A6%E4%B9%A0%E6%96%87%E4%BB%B6/%E5%A4%A7%E5%9B%9B%E4%B8%8A/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1/%E5%89%8D%E7%AB%AF/charisma-master/charisma-master/form.html#" class="btn btn-minimize btn-round btn-default"><i class="glyphicon glyphicon-chevron-up"></i></a>
-                    <a href="file:///E:/%E6%97%A5%E8%AE%B0/%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3/%E5%A4%A9%E5%A4%A7/%E5%AD%A6%E4%B9%A0%E6%96%87%E4%BB%B6/%E5%A4%A7%E5%9B%9B%E4%B8%8A/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1/%E5%89%8D%E7%AB%AF/charisma-master/charisma-master/form.html#" class="btn btn-close btn-round btn-default"><i class="glyphicon glyphicon-remove"></i></a>
+                    <a href="form.html#" class="btn btn-setting btn-round btn-default"><i class="glyphicon glyphicon-cog"></i></a>
+                    <a href="form.html#" class="btn btn-minimize btn-round btn-default"><i class="glyphicon glyphicon-chevron-up"></i></a>
+                    <a href="form.html#" class="btn btn-close btn-round btn-default"><i class="glyphicon glyphicon-remove"></i></a>
                 </div>
             </div>
-            <div class="box-content">
-                <ul class="dashboard-list">
+            <div class="box-content" id="worker_info">
+                <ul class="dashboard-list" v-cloak>
                     <li>
-                        <strong>工号：</strong> 666
+                        <strong>工号：</strong> {{ user.worker_id }}
                         <br>
                     </li>
                     <li>
-                        <strong>姓名： </strong> 鸣大神厉害了
+                        <strong>姓名： </strong> {{ user.worker_name }}
                         <br>
                     </li>
                     <li>
-                        <strong>职务： </strong> 全干
+                        <strong>职务： </strong> {{ degree[user.worker_degree[0].degree_degree_id-1].degree_name }}
                         <br>
                     </li>
                     <li>
-                        <strong>部门： </strong> 软一
+                        <strong>部门： </strong> {{ department[user.worker_degree[0].degree_department_id-1].department_name }}
                         <br>
                     </li>
                     <li>
-                        <strong>电话： </strong> 7654321
+                        <strong>性别： </strong> {{ male[user.worker_male] }}
                         <br>
                     </li>
                     <li>
-                        <strong>性别： </strong> 你猜？
+                        <strong>已用年假： </strong> {{ user.worker_year_holidays_used * (-1) }}
+                        <br>
+                    </li>
+                    <li>
+                        <strong>剩余年假： </strong> {{ user.worker_year_holidays_residue }}
+                        <br>
+                    </li>
+                    <li>
+                        <strong>加班时长： </strong> {{ user.worker_workAdd_time }}
                         <br>
                     </li>
                     <div class="form-group">
                     <li>
-                        <strong>邮箱： </strong> 妹子约吗
+                        <strong>邮箱： </strong> {{ user.worker_email }}
+                        <br>
+                    </li>
+                    <li>
+                        <strong>地址： </strong> {{ user.worker_address }}
                         <br>
                     </li>
                     </div>
@@ -257,8 +268,8 @@
                     <p>Here settings can be configured...</p>
                 </div>
                 <div class="modal-footer">
-                    <a href="file:///E:/%E6%97%A5%E8%AE%B0/%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3/%E5%A4%A9%E5%A4%A7/%E5%AD%A6%E4%B9%A0%E6%96%87%E4%BB%B6/%E5%A4%A7%E5%9B%9B%E4%B8%8A/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1/%E5%89%8D%E7%AB%AF/charisma-master/charisma-master/form.html#" class="btn btn-default" data-dismiss="modal">Close</a>
-                    <a href="file:///E:/%E6%97%A5%E8%AE%B0/%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3/%E5%A4%A9%E5%A4%A7/%E5%AD%A6%E4%B9%A0%E6%96%87%E4%BB%B6/%E5%A4%A7%E5%9B%9B%E4%B8%8A/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1/%E5%89%8D%E7%AB%AF/charisma-master/charisma-master/form.html#" class="btn btn-primary" data-dismiss="modal">Save changes</a>
+                    <a href="form.html#" class="btn btn-default" data-dismiss="modal">Close</a>
+                    <a href="form.html#" class="btn btn-primary" data-dismiss="modal">Save changes</a>
                 </div>
             </div>
         </div>
@@ -274,39 +285,44 @@
 
 <!-- external javascript -->
 
-<script src="./personal_info_just_layout_files/bootstrap.min.js.下载"></script>
+<script src="./personal_info_just_layout_files/bootstrap.min.js"></script>
 
 <!-- library for cookie management -->
-<script src="./personal_info_just_layout_files/jquery.cookie.js.下载"></script>
+<script src="./personal_info_just_layout_files/jquery.cookie.js"></script>
 <!-- calender plugin -->
-<script src="./personal_info_just_layout_files/moment.min.js.下载"></script>
-<script src="./personal_info_just_layout_files/fullcalendar.min.js.下载"></script>
+<script src="./personal_info_just_layout_files/moment.min.js"></script>
+<script src="./personal_info_just_layout_files/fullcalendar.min.js"></script>
 <!-- data table plugin -->
-<script src="./personal_info_just_layout_files/jquery.dataTables.min.js.下载"></script>
+<script src="./personal_info_just_layout_files/jquery.dataTables.min.js"></script>
 
 <!-- select or dropdown enhancer -->
-<script src="./personal_info_just_layout_files/chosen.jquery.min.js.下载"></script>
+<script src="./personal_info_just_layout_files/chosen.jquery.min.js"></script>
 <!-- plugin for gallery image view -->
-<script src="./personal_info_just_layout_files/jquery.colorbox-min.js.下载"></script>
+<script src="./personal_info_just_layout_files/jquery.colorbox-min.js"></script>
 <!-- notification plugin -->
-<script src="./personal_info_just_layout_files/jquery.noty.js.下载"></script>
+<script src="./personal_info_just_layout_files/jquery.noty.js"></script>
 <!-- library for making tables responsive -->
-<script src="./personal_info_just_layout_files/responsive-tables.js.下载"></script>
+<script src="./personal_info_just_layout_files/responsive-tables.js"></script>
 <!-- tour plugin -->
-<script src="./personal_info_just_layout_files/bootstrap-tour.min.js.下载"></script>
+<script src="./personal_info_just_layout_files/bootstrap-tour.min.js"></script>
 <!-- star rating plugin -->
-<script src="./personal_info_just_layout_files/jquery.raty.min.js.下载"></script>
+<script src="./personal_info_just_layout_files/jquery.raty.min.js"></script>
 <!-- for iOS style toggle switch -->
-<script src="./personal_info_just_layout_files/jquery.iphone.toggle.js.下载"></script>
+<script src="./personal_info_just_layout_files/jquery.iphone.toggle.js"></script>
 <!-- autogrowing textarea plugin -->
-<script src="./personal_info_just_layout_files/jquery.autogrow-textarea.js.下载"></script>
+<script src="./personal_info_just_layout_files/jquery.autogrow-textarea.js"></script>
 <!-- multiple file upload plugin -->
-<script src="./personal_info_just_layout_files/jquery.uploadify-3.1.min.js.下载"></script>
+<script src="./personal_info_just_layout_files/jquery.uploadify-3.1.min.js"></script>
 <!-- history.js for cross-browser state change on ajax -->
-<script src="./personal_info_just_layout_files/jquery.history.js.下载"></script>
+<script src="./personal_info_just_layout_files/jquery.history.js"></script>
 <!-- application script for Charisma demo -->
-<script src="./personal_info_just_layout_files/charisma.js.下载"></script>
-
+<script src="./personal_info_just_layout_files/charisma.js"></script>
+<script src="js/vue.js"></script>
+<script src="js/vue-resource.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/Lib.js"></script>
+<script src="js/share_info.js"></script>
+<script src="js/info_layout.js"></script>
 
 
 
