@@ -8,7 +8,7 @@ from flask import jsonify
 from app import create_app, db
 from app.models import Degree, Department, WorkerDegree, Worker, HolidayType, Holiday, Admin, WorkaddInfo
 
-app = create_app('testing')
+app = create_app('production')
 manager = Manager(app)
 migrate = Migrate(app, db)
 
