@@ -46,6 +46,7 @@ def get_holidays_info():
     holiday_info = holidays.items
     if not holiday_info:
         holiday_info = []
+    holiday_info = holiday_info[::-1]
     info = []
     for holiday in holiday_info:
         info.append(holiday.to_json())
