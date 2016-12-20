@@ -266,6 +266,7 @@ def get_workadds_info():
     if not workadds_info:
         workadds_info = []
     info = []
+    workadds_info = workadds_info[::-1]
     for workadd in workadds_info:
         info.append(workadd.to_json())
     return jsonify({'workadds': info,

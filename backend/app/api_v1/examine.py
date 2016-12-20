@@ -103,6 +103,8 @@ def get_examine_holidays_info():
                             info.append(holiday)
                             continue
     jsons = []
+    if info:
+        info = info[::-1]
     for holiday in info:
         jsons.append(holiday.to_json())
     return jsonify({"holidays": jsons})
@@ -133,6 +135,9 @@ def get_examine_workadds_info():
                     info.append(workadd)
 
     jsons = []
+
+    if info:
+        info = info[::-1]
     for workadd in info:
         jsons.append(workadd.to_json())
     return jsonify({"workadds": jsons})
