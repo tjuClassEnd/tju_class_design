@@ -233,7 +233,7 @@
                 <h2><i class="glyphicon glyphicon-edit"></i> 请假申请管理</h2>
 
                 <div class="box-icon">
-                    <a href="#" class="btn btn-setting btn-round btn-default"><i class="glyphicon glyphicon-cog"></i></a>
+                    <a href="#" class="btn btn-setting btn-round btn-default" onclick="$('#filter_modal').modal('show')"><i class="glyphicon glyphicon-cog"></i></a>
                     <a href="#" class="btn btn-minimize btn-round btn-default"><i class="glyphicon glyphicon-chevron-up"></i></a>
                     <a href="#" class="btn btn-close btn-round btn-default"><i class="glyphicon glyphicon-remove"></i></a>
                 </div>
@@ -384,6 +384,90 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="filter_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h3>Options</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="box-content">
+                <form role="form" >
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">工号</label>
+                        <input class="autogrow form-control" id="exampleInputPassword1"  
+                        v-model="filter.worker_id">
+                    </div>  
+
+                    <div class="form-group">
+                    <label for="selectError">请假类型</label>
+                        <select class="form-control" v-model="filter.holiday_type">
+                              <option v-for="option in options" v-bind:value="option.holiday_type_id" >
+                                    {{ option.holiday_type_name }}
+                              </option>
+                        </select>
+                    </div>
+                                
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">请假时间</label>
+                        <div class="row">
+                        <div class="col-xs-5">
+                            <input type="text"  class="form-control form_datetime" id="exampleInputEmail1" placeholder="请假起始时间" v-model="filter.search_begin">
+                        </div>
+                        <div class="col-xs-2" style="text-align: center;line-height:38px;height:38px;">至</div>
+                        <div class="col-xs-5">
+                            <input type="text"  class="form-control form_datetime" id="exampleInputEmail2" placeholder="请假终止时间" v-model="filter.search_end" >
+                        </div>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">审批状态</label>
+                        <select class="form-control" v-model="filter.apply_state">
+                            <option value="-1">-1</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">审批完成</label>
+                        <select class="form-control" v-model="filter.apply_ok">
+                            <option value="-1">-1</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                        </select>
+                    </div> 
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">销假情况</label>
+                        <select class="form-control" v-model="filter.apply_end">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                        </select>
+                    </div> 
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">请假结束</label>
+                        <select class="form-control" v-model="filter.apply_over">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                        </select>
+                    </div>                
+                </form>
+
+            </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-default" data-dismiss="modal">Close</a>
+                    <a href="#" class="btn btn-default" data-dismiss="modal" @click="clear">Clear</a>
+                    <a href="#" class="btn btn-primary" data-dismiss="modal" @click="filter_change">Save changes</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div><!--/row-->
 
     <!-- content ends -->
@@ -396,7 +480,7 @@
 
     <hr>
 
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <!-- <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 
         <div class="modal-dialog">
             <div class="modal-content">
@@ -413,7 +497,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <footer class="row">
         

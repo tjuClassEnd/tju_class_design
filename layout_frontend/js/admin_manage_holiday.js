@@ -25,6 +25,7 @@ var holidays_info = new Vue({
         gridData: [],
         item: {},
         options: [],
+        filter: {},
         currentPage: 1,
         per_page: 10
     },
@@ -35,14 +36,16 @@ var holidays_info = new Vue({
     },
     methods:{
         get_holidays: function() {
-            this.$http.get(this.apiUrl, { params: {'page': this.currentPage, 
-              'per_page': this.per_page}}).then((response) => {
+            this.clear_filter();
+            var params_data = {'page': this.currentPage, 'per_page': this.per_page};
+            params_data = Object.assign({}, params_data, this.filter);
+            this.$http.get(this.apiUrl, { params: params_data}).then((response) => {
              
                     $('#pagination-demo').twbsPagination('destroy');
                     var totalPages = Math.ceil(response.data.holidays.length/this.per_page);
                     $('#pagination-demo').twbsPagination($.extend({}, defaultOpts, {
-                        startPage: Math.min(this.currentPage, totalPages),
-                        totalPages: totalPages,
+                        startPage: Math.max(Math.min(this.currentPage, totalPages), 1),
+                        totalPages: Math.max(totalPages, 1),
                         onPageClick: function (event, page) {
                           holidays_info.currentPage = page;
                         }
@@ -129,6 +132,20 @@ var holidays_info = new Vue({
                 }
             });
             return res;
+        },
+        clear_filter: function() {
+            for(key in this.filter){
+               if(!this.filter[key])
+                  delete this.filter[key];
+            }
+        },
+        filter_change: function() {
+            this.clear_filter();
+            this.get_holidays();
+        },
+        clear: function() {
+          this.filter = {};
+          this.get_holidays();
         }
     },
     watch: {
@@ -139,6 +156,20 @@ var holidays_info = new Vue({
         this.get_holidays();
       },
       item:{
+            handler: function (val, oldVal) { 
+                if(val.holiday_type == 2){       
+                    $(".form_datetime").datetimepicker('remove');        
+                    $(".form_datetime").datetimepicker({minView: "month",  
+                            format: 'yyyy-mm-dd'});
+                }
+                else{
+                    $(".form_datetime").datetimepicker('remove');        
+                    $(".form_datetime").datetimepicker({ format: 'yyyy-mm-dd hh:ii:ss'});
+                }
+             },
+            deep: true
+      },
+      filter:{
             handler: function (val, oldVal) { 
                 if(val.holiday_type == 2){       
                     $(".form_datetime").datetimepicker('remove');        

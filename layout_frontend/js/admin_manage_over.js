@@ -25,6 +25,7 @@ var workadds_info = new Vue({
         gridData: [],
         item: {},
         options: [],
+        filter: {},
         currentPage: 1,
         per_page: 10
     },
@@ -35,13 +36,15 @@ var workadds_info = new Vue({
     },
     methods:{
         get_workadds: function() {
-            this.$http.get(this.apiUrl, { params: {'page': this.currentPage, 
-              'per_page': this.per_page}}).then((response) => {
+            this.clear_filter();
+            var params_data = {'page': this.currentPage, 'per_page': this.per_page};
+            params_data = Object.assign({}, params_data, this.filter);
+            this.$http.get(this.apiUrl, { params: params_data}).then((response) => {
                     $('#pagination-demo').twbsPagination('destroy');
                     var totalPages = Math.ceil(response.data.workadds.length/this.per_page);
                     $('#pagination-demo').twbsPagination($.extend({}, defaultOpts, {
-                        startPage: Math.min(this.currentPage, totalPages),
-                        totalPages: totalPages,
+                        startPage: Math.max(Math.min(this.currentPage, totalPages), 1),
+                        totalPages: Math.max(totalPages, 1),
                         onPageClick: function (event, page) {
                           workadds_info.currentPage = page;
                         }
@@ -126,6 +129,20 @@ var workadds_info = new Vue({
                 }
             });
             return res;
+        },
+        clear_filter: function() {
+            for(key in this.filter){
+               if(!this.filter[key])
+                  delete this.filter[key];
+            }
+        },
+        filter_change: function() {
+            this.clear_filter();
+            this.get_workadds();
+        },
+        clear: function() {
+          this.filter = {};
+          this.get_workadds();
         }
     },
     watch: {

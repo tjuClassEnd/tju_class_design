@@ -39,8 +39,8 @@ var holidays_info = new Vue({
                   if(response.data.total_page_num > 0) {
                       var totalPages = response.data.total_page_num;
                       $('#pagination-demo').twbsPagination($.extend({}, defaultOpts, {
-                          startPage: Math.min(this.currentPage, totalPages),
-                          totalPages: totalPages,
+                          startPage: Math.max(Math.min(this.currentPage, totalPages), 1),
+                          totalPages: Math.max(totalPages, 1),
                           onPageClick: function (event, page) {
                             holidays_info.currentPage = page;
                           }

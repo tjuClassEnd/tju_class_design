@@ -40,8 +40,8 @@ var over_info = new Vue({
                     $('#pagination-demo').twbsPagination('destroy');
                     var totalPages = Math.ceil(response.data.workadds.length/this.per_page);
                     $('#pagination-demo').twbsPagination($.extend({}, defaultOpts, {
-                        startPage: Math.min(this.currentPage, totalPages),
-                        totalPages: totalPages,
+                        startPage: Math.max(Math.min(this.currentPage, totalPages), 1),
+                        totalPages: Math.max(totalPages, 1),
                         onPageClick: function (event, page) {
                           over_info.currentPage = page;
                         }
