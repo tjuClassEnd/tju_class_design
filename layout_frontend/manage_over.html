@@ -191,6 +191,7 @@
         <tbody>
             <tr v-for="(index,entry) in dataList" >
                 <td data-label="编号"> {{ entry['workadd_id'] }} </td>
+                <td data-label="工号"> {{ entry['workadd_worker_id'] }} </td>
                 <td class="center" data-label="开始时间">{{ entry['workadd_start']  }}</td>
                 <td class="center" data-label="结束时间">{{ entry['workadd_end'] }}</td>
                 <td class="center" data-label="加班类型">{{ options[entry['workadd_info_id'] - 1].workadd_type_name }}</td>
@@ -274,6 +275,12 @@
                 <div class="modal-body">
                     <div class="box-content">
                 <form role="form" >
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">申请人</label>
+                        <input class="autogrow form-control" id="exampleInputPassword1"  
+                        v-model="item.workadd_worker_id" disabled="disabled">
+                    </div>
+
                     <div class="form-group">
                     <label for="selectError">加班类型</label>
                         <select class="form-control" v-model="item.workadd_type" disabled="disabled">

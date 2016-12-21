@@ -16,11 +16,12 @@
         ===
     -->
     
-    <title>Free HTML5 Bootstrap Admin Template</title>
+    <title>LEAVE APPLICATION</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Charisma, a fully featured, responsive, HTML5, Bootstrap admin template.">
     <meta name="author" content="Muhammad Usman">
-
+    <link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+    
     <!-- The styles -->
     <link id="bs-css" href="./manage_over_files/bootstrap-cerulean.min.css" rel="stylesheet">
 
@@ -38,9 +39,9 @@
     <link href="./manage_over_files/jquery.iphone.toggle.css" rel="stylesheet">
     <link href="./manage_over_files/uploadify.css" rel="stylesheet">
     <link href="./manage_over_files/animate.min.css" rel="stylesheet">
-
+    <link href="css/table.css" rel="stylesheet">
     <!-- jQuery -->
-    <script src="./manage_over_files/jquery.min.js.下载"></script>
+    <script src="./manage_over_files/jquery.min.js"></script>
 
     <!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -67,7 +68,7 @@
                 <span>Leave Appication</span></a>
 
             <!-- user dropdown starts -->
-            <div class="btn-group pull-right">
+            <div class="btn-group pull-right" id="share_info">
                 <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                     <i class="glyphicon glyphicon-user"></i><span class="hidden-sm hidden-xs"> admin</span>
                     <span class="caret"></span>
@@ -75,7 +76,7 @@
                 <ul class="dropdown-menu">
                     <li><a href="personal_info_just_layout.html#">Profile</a></li>
                     <li class="divider"></li>
-                    <li><a href="login.html">Logout</a></li>
+                    <li><a @click="logout">Logout</a></li>
                 </ul>
             </div>
             <!-- user dropdown ends -->
@@ -87,15 +88,15 @@
                     <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" id="themes">
-                    <li><a data-value="classic" href="form.html#"><i class="whitespace"></i> Classic</a></li>
-                    <li><a data-value="cerulean" href="form.html#"><i class="glyphicon glyphicon-ok"></i> Cerulean</a></li>
-                    <li><a data-value="cyborg" href="form.html#"><i class="whitespace"></i> Cyborg</a></li>
-                    <li><a data-value="simplex" href="form.html#"><i class="whitespace"></i> Simplex</a></li>
-                    <li><a data-value="darkly" href="form.html#"><i class="whitespace"></i> Darkly</a></li>
-                    <li><a data-value="lumen" href="form.html#"><i class="whitespace"></i> Lumen</a></li>
-                    <li><a data-value="slate" href="form.html#"><i class="whitespace"></i> Slate</a></li>
-                    <li><a data-value="spacelab" href="form.html#"><i class="whitespace"></i> Spacelab</a></li>
-                    <li><a data-value="united" href="form.html#"><i class="whitespace"></i> United</a></li>
+                    <li><a data-value="classic" href="#"><i class="whitespace"></i> Classic</a></li>
+                    <li><a data-value="cerulean" href="#"><i class="glyphicon glyphicon-ok"></i> Cerulean</a></li>
+                    <li><a data-value="cyborg" href="#"><i class="whitespace"></i> Cyborg</a></li>
+                    <li><a data-value="simplex" href="#"><i class="whitespace"></i> Simplex</a></li>
+                    <li><a data-value="darkly" href="#"><i class="whitespace"></i> Darkly</a></li>
+                    <li><a data-value="lumen" href="#"><i class="whitespace"></i> Lumen</a></li>
+                    <li><a data-value="slate" href="#"><i class="whitespace"></i> Slate</a></li>
+                    <li><a data-value="spacelab" href="#"><i class="whitespace"></i> Spacelab</a></li>
+                    <li><a data-value="united" href="#"><i class="whitespace"></i> United</a></li>
                 </ul>
             </div>
             <!-- theme selector ends -->
@@ -105,13 +106,13 @@
                 <li class="dropdown">
                     
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="form.html#">Action</a></li>
-                        <li><a href="form.html#">Another action</a></li>
-                        <li><a href="form.html#">Something else here</a></li>
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
                         <li class="divider"></li>
-                        <li><a href="form.html#">Separated link</a></li>
+                        <li><a href="#">Separated link</a></li>
                         <li class="divider"></li>
-                        <li><a href="form.html#">One more separated link</a></li>
+                        <li><a href="#">One more separated link</a></li>
                     </ul>
                 </li>
                 <li>
@@ -161,215 +162,154 @@
             <div>
     <ul class="breadcrumb">
         <li>
-            <a href="form.html#">Home</a>
+            <a href="#">Home</a>
         </li>
         <li>
-            <a href="form.html#">加班申请管理</a>
+            <a href="#">加班申请管理</a>
         </li>
     </ul>
 </div>
 
 <!--/row-->
-
-<div class="row">
+<template id="grid-template">
+  <table class="table table-striped table-bordered bootstrap-datatable" id="dt" style="table-layout:fixed;">
+       
+        <thead>
+            <tr>
+                <th v-for="col in columns">
+                     {{ col.name}}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="(index,entry) in dataList" >
+                <td data-label="编号"> {{ entry['workadd_id'] }} </td>
+                <td data-label="工号"> {{ entry['workadd_worker_id'] }} </td>
+                <td class="center" data-label="开始时间">{{ entry['workadd_start']  }}</td>
+                <td class="center" data-label="结束时间">{{ entry['workadd_end'] }}</td>
+                <td class="center" data-label="加班类型">{{ options[entry['workadd_info_id'] - 1].workadd_type_name }}</td>
+                <td class="center" data-label="加班原因">
+                    <div style="width:100%;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;">
+                    {{ entry['workadd_reason'] }}
+                    </div>
+                </td>
+                <td class="center" data-label="申请状态">
+                    
+                    <span class="label label-default" v-bind:class="getWorkaddLabel(entry['workadd_add_state'])"> 
+                        {{ getWorkaddState(entry['workadd_add_state']) }} 
+                    </span>
+                    
+                </td>
+                <td class="center" data-label="申请时间">{{ entry['workadd_apply_time'] }}</td>
+                <td class="center" data-label="操作">
+                    <a class="btn btn-success btn-sm" @click="loadEntry1(entry['workadd_id'])">
+                        <i class="glyphicon glyphicon-zoom-in icon-white"></i>
+                        查看
+                    </a>
+                    <a class="btn btn-info btn-sm" @click="loadEntry2(entry['workadd_id'])">
+                        <i class="glyphicon glyphicon-edit icon-white"></i>
+                        同意
+                    </a>
+                    
+                    <a class="btn btn-danger btn-sm" @click="loadEntry3(entry['workadd_id'])">
+                        <i class="glyphicon glyphicon-trash icon-white"></i>
+                        驳回
+                    </a>
+                </td>
+             </tr>
+        </tbody>
+    </table>
+</template>
+<div class="row" id="workadds_info">
     <div class="box col-md-12">
         <div class="box-inner">
             <div class="box-header well" data-original-title="">
                 <h2><i class="glyphicon glyphicon-edit"></i> 加班申请管理</h2>
 
                 <div class="box-icon">
-                    <a href="form.html#" class="btn btn-setting btn-round btn-default"><i class="glyphicon glyphicon-cog"></i></a>
-                    <a href="form.html#" class="btn btn-minimize btn-round btn-default"><i class="glyphicon glyphicon-chevron-up"></i></a>
-                    <a href="form.html#" class="btn btn-close btn-round btn-default"><i class="glyphicon glyphicon-remove"></i></a>
+                    <a href="#" class="btn btn-setting btn-round btn-default"><i class="glyphicon glyphicon-cog"></i></a>
+                    <a href="#" class="btn btn-minimize btn-round btn-default"><i class="glyphicon glyphicon-chevron-up"></i></a>
+                    <a href="#" class="btn btn-close btn-round btn-default"><i class="glyphicon glyphicon-remove"></i></a>
                 </div>
             </div>
             <div class="box-content">
-                    <table class="table table-striped table-bordered bootstrap-datatable datatable responsive">
+                 <div id="dt_length" class="dataTables_length">
+                    <label>Show 
+                        <select size="1" name="dt_length" aria-controls="dt" v-model="per_page">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select> 
+                        entries
+                    </label>
+                </div>
 
-    <colgroup>
-            <col style="width:14%">
-            <col style="width:6%">
-            <col style="width:10%">
-            <col style="width:10%">
-            <col style="width:7%">
-            <col style="width:10%">
-            <col style="width:8%">
-            <col style="width:8%">
-            <col style="width:9%">
-            <col style="width:5%">
-            <col style="width:5%">
-            </colgroup>
-    <thead>
-    <tr>
-        <th>姓名</th>
-        <th>工号</th>
-        <th>部门</th>
-        <th>加班时段</th>
-        <th>加班时间</th>
-        <th>累计加班天数</th>
-        <th>审批状态</th>
-        <th>审批人</th>
-        <th>申请时间</th>
-        <th>操作</th>
-    </tr>
-    </thead>
-    <tbody role="alert" aria-live="polite" aria-relevant="all"><tr class="odd">
-        <td class=" sorting_1">Chris Jack</td>
-        <td class=" ">002</td>
-        <td class="center ">香港工程部</td>
-        <td class="center ">2016/11/11-2016/11/12</td>
-        <td class="center ">1</td>
-        <td class="center ">10</td>
-        <td class="center ">
-            <span class="label-warning label label-default">待审核</span>
-        </td>
-        <td class="center ">Wei Zhang</td>
-        <td class="center ">2016/11/9</td>
-        <td class="center ">
-            <a class="btn btn-success btn-sm" href="manage_leave.html#">
-                <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                通过
-            </a>
-            <a class="btn btn-info btn-sm" href="manage_leave.html#">
-                <i class="glyphicon glyphicon-edit icon-white"></i>
-                准销
-            </a>
-            <a class="btn btn-danger btn-sm" href="manage_leave.html#">
-                <i class="glyphicon glyphicon-trash icon-white"></i>
-                驳回
-            </a>
-            <a class="btn btn-default btn-sm" href="manage_leave.html#">
-                <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                查看
-            </a>
-        </td>
-    </tr><tr class="even">
-        <td class=" sorting_1">David R</td>
-        <td class=" ">001</td>
-        <td class="center ">研发部</td>
-        <td class="center ">2016/12/15-2016/12/17</td>
-        <td class="center ">2</td>
-        <td class="center ">7</td>
-        <td class="center ">
-            <span class="label-success label label-default">已通过审核</span>
-        </td>
-        <td class="center ">John Wu</td>
-        <td class="center ">2016/12/14</td>
-        <td class="center ">
-            <a class="btn btn-success btn-sm" href="manage_leave.html#">
-                <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                通过
-            </a>
-            <a class="btn btn-info btn-sm" href="manage_leave.html#">
-                <i class="glyphicon glyphicon-edit icon-white"></i>
-                准销
-            </a>
-            <a class="btn btn-danger btn-sm" href="manage_leave.html#">
-                <i class="glyphicon glyphicon-trash icon-white"></i>
-                驳回
-            </a>
-            <a class="btn btn-default btn-sm" href="manage_leave.html#">
-                <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                查看
-            </a>
-        </td>
-    </tr><tr class="odd">
-        <td class=" sorting_1">Helen Garner</td>
-        <td class=" ">005</td>
-        <td class="center ">研发部</td>
-        <td class="center ">2016/12/15-2016/12/16</td>
-        <td class="center ">1</td>
-        <td class="center ">3</td>
-        <td class="center ">
-            <span class="label-success label label-default">已批准撤销</span>
-        </td>
-        <td class="center ">John Wu</td>
-        <td class="center ">2016/12/14</td>
-        <td class="center ">
-            <a class="btn btn-success btn-sm" href="manage_leave.html#">
-                <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                通过
-            </a>
-            <a class="btn btn-info btn-sm" href="manage_leave.html#">
-                <i class="glyphicon glyphicon-edit icon-white"></i>
-                准销
-            </a>
-            <a class="btn btn-danger btn-sm" href="manage_leave.html#">
-                <i class="glyphicon glyphicon-trash icon-white"></i>
-                驳回
-            </a>
-            <a class="btn btn-default btn-sm" href="manage_leave.html#">
-                <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                查看
-            </a>
-        </td>
-    </tr><tr class="even">
-        <td class=" sorting_1">Muhammad Usman</td>
-        <td class=" ">003</td>
-        <td class="center ">人力资源部</td>
-        <td class="center ">2016/12/15-2016/12/16</td>
-        <td class="center ">1</td>
-        <td class="center ">12</td>
-        <td class="center ">
-            <span class="label-default label">待批准撤销</span>
-        </td>
-        <td class="center ">John Wu</td>
-        <td class="center ">2016/12/14</td>
-        <td class="center ">
-            <a class="btn btn-success btn-sm" href="manage_leave.html#">
-                <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                通过
-            </a>
-            <a class="btn btn-info btn-sm" href="manage_leave.html#">
-                <i class="glyphicon glyphicon-edit icon-white"></i>
-                准销
-            </a>
-            <a class="btn btn-danger btn-sm" href="manage_leave.html#">
-                <i class="glyphicon glyphicon-trash icon-white"></i>
-                驳回
-            </a>
-            <a class="btn btn-default btn-sm" href="manage_leave.html#">
-                <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                查看
-            </a>
-        </td>
-    </tr><tr class="odd">
-        <td class=" sorting_1">Sheikh Heera</td>
-        <td class=" ">004</td>
-        <td class="center ">商务合作部</td>
-        <td class="center ">2016/12/15-2016/12/16</td>
-        <td class="center ">1</td>
-        <td class="center ">16</td>
-        <td class="center ">
-            <span class="label-default label label-danger">未通过审核</span>
-        </td>
-        <td class="center ">John Wu</td>
-        <td class="center ">2016/12/14</td>
-        <td class="center ">
-            <a class="btn btn-success btn-sm" href="manage_leave.html#">
-                <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                通过
-            </a>
-            <a class="btn btn-info btn-sm" href="manage_leave.html#">
-                <i class="glyphicon glyphicon-edit icon-white"></i>
-                准销
-            </a>
-            <a class="btn btn-danger btn-sm" href="manage_leave.html#">
-                <i class="glyphicon glyphicon-trash icon-white"></i>
-                驳回
-            </a>
-            <a class="btn btn-default btn-sm" href="manage_leave.html#">
-                <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                查看
-            </a>
-        </td>
-    </tr></tbody></table>
+                <simple-grid :data-list="gridData" :columns="gridColumns" v-on:load-entry1="load_workadd"
+                v-on:load-entry2="manage_workadd" v-on:load-entry3="reject_workadd" :options="options">
+                </simple-grid>
 
+                <ul id="pagination-demo" class="pagination-sm"></ul>
             </div>
         </div>
     </div>
     <!--/span-->
+    <div class="modal fade" id="workadd_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h3>Details</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="box-content">
+                <form role="form" >
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">申请人</label>
+                        <input class="autogrow form-control" id="exampleInputPassword1"  
+                        v-model="item.workadd_worker_id" disabled="disabled">
+                    </div>
+
+                    <div class="form-group">
+                    <label for="selectError">加班类型</label>
+                        <select class="form-control" v-model="item.workadd_type" >
+                              <option v-for="option in options" v-bind:value="option.workadd_type_id" >
+                                    {{ option.workadd_type_name }}
+                              </option>
+                        </select>
+                    </div>
+                                
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">加班时间</label>
+                        <div class="row">
+                        <div class="col-xs-5">
+                            <input type="text" readonly class="form-control form_datetime" id="exampleInputEmail1" placeholder="加班起始时间" v-model="item.workadd_start" >
+                        </div>
+                        <div class="col-xs-2" style="text-align: center;line-height:38px;height:38px;">至</div>
+                        <div class="col-xs-5">
+                            <input type="text" readonly class="form-control form_datetime" id="exampleInputEmail2" placeholder="加班终止时间" v-model="item.workadd_end">
+                        </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">加班原因</label>
+                        <textarea class="autogrow form-control" id="exampleInputPassword1" placeholder="请输入请假原因" 
+                        v-model="item.workadd_reason"></textarea>
+                    </div>                    
+                </form>
+
+            </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-default" data-dismiss="modal">Close</a>
+                    <a href="#" class="btn btn-primary" data-dismiss="modal" @click="save_workadd"
+                    >Save changes</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div><!--/row-->
 
     <!-- content ends -->
@@ -394,8 +334,8 @@
                     <p>Here settings can be configured...</p>
                 </div>
                 <div class="modal-footer">
-                    <a href="form.html#" class="btn btn-default" data-dismiss="modal">Close</a>
-                    <a href="form.html#" class="btn btn-primary" data-dismiss="modal">Save changes</a>
+                    <a href="#" class="btn btn-default" data-dismiss="modal">Close</a>
+                    <a href="#" class="btn btn-primary" data-dismiss="modal">Save changes</a>
                 </div>
             </div>
         </div>
@@ -411,39 +351,50 @@
 
 <!-- external javascript -->
 
-<script src="./manage_over_files/bootstrap.min.js.下载"></script>
+<script src="./manage_over_files/bootstrap.min.js"></script>
 
 <!-- library for cookie management -->
-<script src="./manage_over_files/jquery.cookie.js.下载"></script>
+<script src="./manage_over_files/jquery.cookie.js"></script>
 <!-- calender plugin -->
-<script src="./manage_over_files/moment.min.js.下载"></script>
-<script src="./manage_over_files/fullcalendar.min.js.下载"></script>
+<script src="./manage_over_files/moment.min.js"></script>
+<script src="./manage_over_files/fullcalendar.min.js"></script>
 <!-- data table plugin -->
-<script src="./manage_over_files/jquery.dataTables.min.js.下载"></script>
+<script src="./manage_over_files/jquery.dataTables.min.js"></script>
 
 <!-- select or dropdown enhancer -->
-<script src="./manage_over_files/chosen.jquery.min.js.下载"></script>
+<script src="./manage_over_files/chosen.jquery.min.js"></script>
 <!-- plugin for gallery image view -->
-<script src="./manage_over_files/jquery.colorbox-min.js.下载"></script>
+<script src="./manage_over_files/jquery.colorbox-min.js"></script>
 <!-- notification plugin -->
-<script src="./manage_over_files/jquery.noty.js.下载"></script>
+<script src="./manage_over_files/jquery.noty.js"></script>
 <!-- library for making tables responsive -->
-<script src="./manage_over_files/responsive-tables.js.下载"></script>
+<script src="./manage_over_files/responsive-tables.js"></script>
 <!-- tour plugin -->
-<script src="./manage_over_files/bootstrap-tour.min.js.下载"></script>
+<script src="./manage_over_files/bootstrap-tour.min.js"></script>
 <!-- star rating plugin -->
-<script src="./manage_over_files/jquery.raty.min.js.下载"></script>
+<script src="./manage_over_files/jquery.raty.min.js"></script>
 <!-- for iOS style toggle switch -->
-<script src="./manage_over_files/jquery.iphone.toggle.js.下载"></script>
+<script src="./manage_over_files/jquery.iphone.toggle.js"></script>
 <!-- autogrowing textarea plugin -->
-<script src="./manage_over_files/jquery.autogrow-textarea.js.下载"></script>
+<script src="./manage_over_files/jquery.autogrow-textarea.js"></script>
 <!-- multiple file upload plugin -->
-<script src="./manage_over_files/jquery.uploadify-3.1.min.js.下载"></script>
+<script src="./manage_over_files/jquery.uploadify-3.1.min.js"></script>
 <!-- history.js for cross-browser state change on ajax -->
-<script src="./manage_over_files/jquery.history.js.下载"></script>
+<script src="./manage_over_files/jquery.history.js"></script>
 <!-- application script for Charisma demo -->
-<script src="./manage_over_files/charisma.js.下载"></script>
-
+<script src="./manage_over_files/charisma.js"></script>
+<script src="js/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript">
+        $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd hh:ii:ss'});
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.2.0/js/tether.min.js" crossorigin="anonymous"></script>
+<script src="js/jquery.twbsPagination.js"></script>
+<script src="js/vue.js"></script>
+<script src="js/vue-resource.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/Lib.js"></script>
+<script src="js/share_info.js"></script>
+<script src="js/admin_manage_over.js"></script>
 
 
 

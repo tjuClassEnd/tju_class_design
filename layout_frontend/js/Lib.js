@@ -63,7 +63,10 @@ Vue.component('simple-grid', {
                 else
                   return "已通过";
               else if(ok == 0)
-                return (state+1) + "级审批";
+                if(state == -1)
+                  return "已驳回";
+                else
+                  return (state+1) + "级审批";
               else
                 return "已驳回";
            }
@@ -87,7 +90,10 @@ Vue.component('simple-grid', {
                 else
                   return {'label-success': true};
               else if(ok == 0)
-                return {'label-warning': true};
+                if(state == -1)
+                  return {'label-danger': true};
+                else
+                  return {'label-warning': true};
               else
                 return {'label-danger': true};
            }

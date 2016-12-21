@@ -16,7 +16,7 @@
         ===
     -->
     
-    <title>Free HTML5 Bootstrap Admin Template</title>
+    <title>LEAVE APPLICATION</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Charisma, a fully featured, responsive, HTML5, Bootstrap admin template.">
     <meta name="author" content="Muhammad Usman">
@@ -67,15 +67,15 @@
                 <span>Leave Appication</span></a>
 
             <!-- user dropdown starts -->
-            <div class="btn-group pull-right">
+            <div class="btn-group pull-right" id="share_info">
                 <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                     <i class="glyphicon glyphicon-user"></i><span class="hidden-sm hidden-xs"> admin</span>
                     <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a href="personal_info_just_layout.html#">Profile</a></li>
+                    <li><a href="admin_userinfo.html#">Profile</a></li>
                     <li class="divider"></li>
-                    <li><a href="login.html">Logout</a></li>
+                    <li><a @click="logout">Logout</a></li>
                 </ul>
             </div>
             <!-- user dropdown ends -->
@@ -87,15 +87,15 @@
                     <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" id="themes">
-                    <li><a data-value="classic" href="form.html#"><i class="whitespace"></i> Classic</a></li>
-                    <li><a data-value="cerulean" href="form.html#"><i class="glyphicon glyphicon-ok"></i> Cerulean</a></li>
-                    <li><a data-value="cyborg" href="form.html#"><i class="whitespace"></i> Cyborg</a></li>
-                    <li><a data-value="simplex" href="form.html#"><i class="whitespace"></i> Simplex</a></li>
-                    <li><a data-value="darkly" href="form.html#"><i class="whitespace"></i> Darkly</a></li>
-                    <li><a data-value="lumen" href="form.html#"><i class="whitespace"></i> Lumen</a></li>
-                    <li><a data-value="slate" href="form.html#"><i class="whitespace"></i> Slate</a></li>
-                    <li><a data-value="spacelab" href="form.html#"><i class="whitespace"></i> Spacelab</a></li>
-                    <li><a data-value="united" href="form.html#"><i class="whitespace"></i> United</a></li>
+                    <li><a data-value="classic" href="#"><i class="whitespace"></i> Classic</a></li>
+                    <li><a data-value="cerulean" href="#"><i class="glyphicon glyphicon-ok"></i> Cerulean</a></li>
+                    <li><a data-value="cyborg" href="#"><i class="whitespace"></i> Cyborg</a></li>
+                    <li><a data-value="simplex" href="#"><i class="whitespace"></i> Simplex</a></li>
+                    <li><a data-value="darkly" href="#"><i class="whitespace"></i> Darkly</a></li>
+                    <li><a data-value="lumen" href="#"><i class="whitespace"></i> Lumen</a></li>
+                    <li><a data-value="slate" href="#"><i class="whitespace"></i> Slate</a></li>
+                    <li><a data-value="spacelab" href="#"><i class="whitespace"></i> Spacelab</a></li>
+                    <li><a data-value="united" href="#"><i class="whitespace"></i> United</a></li>
                 </ul>
             </div>
             <!-- theme selector ends -->
@@ -105,13 +105,13 @@
                 <li class="dropdown">
                     
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="form.html#">Action</a></li>
-                        <li><a href="form.html#">Another action</a></li>
-                        <li><a href="form.html#">Something else here</a></li>
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
                         <li class="divider"></li>
-                        <li><a href="form.html#">Separated link</a></li>
+                        <li><a href="#">Separated link</a></li>
                         <li class="divider"></li>
-                        <li><a href="form.html#">One more separated link</a></li>
+                        <li><a href="#">One more separated link</a></li>
                     </ul>
                 </li>
                 <li>
@@ -161,60 +161,56 @@
             <div>
     <ul class="breadcrumb">
         <li>
-            <a href="form.html#">Home</a>
+            <a href="#">Home</a>
         </li>
         <li>
-            <a href="form.html#">个人信息</a>
+            <a href="#">个人信息</a>
         </li>
     </ul>
 </div>
 
 <!--/row-->
 
-<div class="row">
+<div class="row" id="worker_add">
     <div class="box col-md-12">
         <div class="box-inner">
             <div class="box-header well" data-original-title="">
-                <h2><i class="glyphicon glyphicon-edit"></i>员工详情</h2>
+                <h2><i class="glyphicon glyphicon-edit"></i>添加员工</h2>
 
                 <div class="box-icon">
-                    <a href="form.html#" class="btn btn-setting btn-round btn-default"><i class="glyphicon glyphicon-cog"></i></a>
-                    <a href="form.html#" class="btn btn-minimize btn-round btn-default"><i class="glyphicon glyphicon-chevron-up"></i></a>
-                    <a href="form.html#" class="btn btn-close btn-round btn-default"><i class="glyphicon glyphicon-remove"></i></a>
+                    <a href="#" class="btn btn-setting btn-round btn-default"><i class="glyphicon glyphicon-cog"></i></a>
+                    <a href="#" class="btn btn-minimize btn-round btn-default"><i class="glyphicon glyphicon-chevron-up"></i></a>
+                    <a href="#" class="btn btn-close btn-round btn-default"><i class="glyphicon glyphicon-remove"></i></a>
                 </div>
             </div>
             <div class="box-content">
                 <form role="form">
                     <div class="form-group">
                         <label for="name">工号</label>
-                        <input type="text" class="form-control" id="exampleInputPassword1" placeholder="">
+                        <input type="text" class="form-control"  placeholder="" v-model="worker.worker_id">
                     </div> 
                     <div class="form-group">
                         <label for="name">姓名</label>
-                        <input type="text" class="form-control" id="exampleInputPassword1" placeholder="">
-                    </div> 
-                    <div class="form-group">
-                        <label for="name">职务</label>
-                        <input type="text" class="form-control" id="exampleInputPassword1" placeholder="">
-                    </div> 
-                    <div class="form-group">
-                        <label for="name">部门</label>
-                        <input type="text" class="form-control" id="exampleInputPassword1" placeholder="">
-                    </div>
-                    <div class="form-group">
-                        <label for="name">电话</label>
-                        <input type="text" class="form-control" id="exampleInputPassword1" placeholder="">
-                    </div>  
-                    <div class="form-group">
-                        <label for="name">性别</label>
-                        <input type="text" class="form-control" id="exampleInputPassword1" placeholder="">
+                        <input type="text" class="form-control"  placeholder="" v-model="worker.worker_name">
                     </div> 
                     <div class="form-group">
                         <label for="name">邮箱</label>
-                        <input type="text" class="form-control" id="exampleInputPassword1" placeholder="">
+                        <input type="text" class="form-control"  placeholder="" v-model="worker.worker_email">
+                    </div> 
+                    <div class="form-group">
+                        <label for="name">地址</label>
+                        <input type="text" class="form-control"  placeholder="" v-model="worker.worker_address">
                     </div>  
+                    <div class="form-group">
+                        <label for="name">密码</label>
+                        <input type="password" class="form-control"  placeholder="" v-model="worker.password">
+                    </div>   
+                    <div class="form-group">
+                        <label for="name">重复密码</label>
+                        <input type="password" class="form-control"  placeholder="" v-model="worker.password2">
+                    </div>   
                 </form>
-                    <a class="ajax-link" href="admin_userinfo.html"><button type="submit" class="btn btn-default">提交修改</button></a>
+                    <a class="ajax-link" @click="check_apply"><button type="submit" class="btn btn-default">提交</button></a>
             </div>
         </div>
     </div>
@@ -244,8 +240,8 @@
                     <p>Here settings can be configured...</p>
                 </div>
                 <div class="modal-footer">
-                    <a href="form.html#" class="btn btn-default" data-dismiss="modal">Close</a>
-                    <a href="form.html#" class="btn btn-primary" data-dismiss="modal">Save changes</a>
+                    <a href="#" class="btn btn-default" data-dismiss="modal">Close</a>
+                    <a href="#" class="btn btn-primary" data-dismiss="modal">Save changes</a>
                 </div>
             </div>
         </div>
@@ -294,6 +290,12 @@
 <!-- application script for Charisma demo -->
 <script src="./personal_info_files/charisma.js"></script>
 
+<script src="js/vue.js"></script>
+<script src="js/vue-resource.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/Lib.js"></script>
+<script src="js/share_info.js"></script>
+<script src="js/user_add.js"></script>
 
 
 

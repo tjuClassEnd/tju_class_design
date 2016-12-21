@@ -2,7 +2,7 @@ var over_apply = new Vue({
     el: "#over_apply",
     data: {
     	apiUrl: 'http://104.160.33.183:5000/api/v1.0/worker/workadds/',
-        item: {'workadd_type': 1},
+        item: {'workadd_type': '1'},
         options: []
     },
     ready: function(){
@@ -22,7 +22,7 @@ var over_apply = new Vue({
         },
     	apply: function(){
             // alert(this.item.holiday_time_begin)
-            this.item.workadd_type = this.workadd_type.toString();
+            this.item.workadd_type = this.item.workadd_type.toString();
             this.$http.post(this.apiUrl, this.item).then((response) => {
                     // 响应成功回调
                     noty({"text":"Apply successfully!","layout":"top","type":"information"});

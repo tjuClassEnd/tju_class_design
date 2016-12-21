@@ -1,22 +1,24 @@
-var admin_user = new Vue({
-    el: "#admin_user",
+var holidays_info = new Vue({
+    el: "#holidays_info",
     data: {
         show: false,
-    	  apiUrl: 'http://104.160.33.183:5000/admin/workers/',
+    	  apiUrl: 'http://104.160.33.183:5000/admin/holidays/',
         gridColumns: [{
+            name: '编号'
+        }, {
             name: '工号'
+        },{
+            name: '开始时间'
         }, {
-            name: '姓名'
+            name: '结束时间'
         }, {
-            name: '性别'
+            name: '请假类型'
         }, {
-            name: '部门'
+            name: '请假原因'
         }, {
-            name: '职务'
+            name: '请假状态'
         }, {
-            name: '邮箱'
-        }, {
-            name: '地址'
+            name: '申请时间'
         }, {
             name: '操作'
         }],
@@ -24,196 +26,136 @@ var admin_user = new Vue({
         item: {},
         options: [],
         currentPage: 1,
-        per_page: 10,
-        male: {
-            true: "男",
-            false: "女"
-        },
-        degree: [],
-        department: [],
-        degree_department_id: 1,
-        degree_degree_id: 1,
-        degree_manage: 0
+        per_page: 10
     },
     ready: function(){
-    	  this.get_workers();
-        this.get_degree_info();
-        this.get_deparment_info();
+      
+    	this.get_holidays();
+      this.get_holiday_type();
     },
     methods:{
-        get_workers: function() {
+        get_holidays: function() {
             this.$http.get(this.apiUrl, { params: {'page': this.currentPage, 
               'per_page': this.per_page}}).then((response) => {
-                  $('#pagination-demo').twbsPagination('destroy');
-                  if(response.data.total_page_num > 0) {
-                      var totalPages = response.data.total_page_num;
-                      $('#pagination-demo').twbsPagination($.extend({}, defaultOpts, {
-                          startPage: Math.min(this.currentPage, totalPages),
-                          totalPages: totalPages,
-                          onPageClick: function (event, page) {
-                            admin_user.currentPage = page;
-                          }
-                      }));
-                  }
-                  else{
-                    this.currentPage = 1;
-                    return;
-                  }
-
-                  this.gridData = response.data.workers;
+             
+                    $('#pagination-demo').twbsPagination('destroy');
+                    var totalPages = Math.ceil(response.data.holidays.length/this.per_page);
+                    $('#pagination-demo').twbsPagination($.extend({}, defaultOpts, {
+                        startPage: Math.min(this.currentPage, totalPages),
+                        totalPages: totalPages,
+                        onPageClick: function (event, page) {
+                          holidays_info.currentPage = page;
+                        }
+                    }));
+                  
+                  this.gridData = response.data.holidays.slice((this.currentPage-1) * this.per_page,
+                                                                    this.currentPage * this.per_page);
                     
               }, (response) => {
                     console.log(response);
                     noty({"text": response.data.message, "layout":"top","type":"error"});
+
                     setTimeout(()=>{
                       window.location.href = "login.html";}, 1000);
+                    
             });
         },
-        load_worker: function(worker_id) {
-            this.item = this.share_load(worker_id);
-            $('#worker_modal').modal('show');
-        },
-        load_worker_pass: function(worker_id) {
-            this.item = this.share_load(worker_id);
-            $('#password_modal').modal('show');
-        },
-        save_worker: function() {
-            if(this.item.worker_password){
-                if(!this.item.worker_password || !this.item.worker_password2){
-                    noty({"text":"Please fill all information","layout":"top","type":"error"});
-                    return;
-                }
-                else if(this.item.worker_password != this.item.worker_password2){
-                    noty({"text":"Please input same new password!","layout":"top","type":"error"});
-                    return;
-                }
-            }
-            this.$http.put(this.apiUrl + this.item.worker_id + '/', this.item)
-                            .then((response) => {
-                                noty({"text":"Modify information successfully","layout":"top","type":"information"}); 
-                            }, (response) => {
+        get_holiday_type: function() {
+            this.$http.get('http://104.160.33.183:5000/admin/holiday_type_infos/').then((response) => {
+                  
+                    this.options = response.data.holiday_type_infos;
+                    
+              }, (response) => {
                     console.log(response);
-                    noty({"text":response.data.message, "layout":"center","type":"error"}); 
+                    noty({"text": response.data.message, "layout":"top","type":"error"});
                 // 响应错误回调
             });
-            this.get_workers();
         },
-        share_load: function(worker_id) {
+        load_holiday: function(holiday_id) {
+            this.item = this.share_load(holiday_id);
+            $('#holiday_modal').modal('show');
+        },
+        //审批
+        manage_holiday: function(holiday_id) {
+            this.item = this.share_load(holiday_id);
+            $('#state_modal').modal('show');
+            
+        },
+        manage_holiday2: function() {
+            console.log(this.item.holiday_apply_state)
+            var put_data = {"holiday_state": this.item.holiday_apply_state};
+
+            this.$http.put(this.apiUrl + this.item.holiday_id + '/', put_data)
+              .then((response) => {
+                    noty({"text": 'Operation Successfully!', "layout":"top","type":"information"});
+                    this.get_holidays();
+              }, (response) => {
+                    console.log(response);
+                    noty({"text": response.data.message, "layout":"top","type":"error"});
+                // 响应错误回调
+            });
+        },
+        save_holiday: function() {
+            this.$http.put(this.apiUrl + this.item.holiday_id + '/', this.item).then((response) => {
+                    noty({"text": 'Modify Successfully!', "layout":"top","type":"information"});
+                    this.get_holidays();
+              }, (response) => {
+                    console.log(response);
+                    noty({"text": response.data.message, "layout":"top","type":"error"});
+                // 响应错误回调
+            });
+        },
+        over_holiday: function(holiday_id) {
+            this.item = this.share_load(holiday_id);
+            var put_data = {"holiday_over": '1'};
+
+            this.$http.put(this.apiUrl + this.item.holiday_id + '/', put_data)
+              .then((response) => {
+                    noty({"text": 'Operation Successfully!', "layout":"top","type":"information"});
+                    this.get_holidays();
+              }, (response) => {
+                    console.log(response);
+                    noty({"text": response.data.message, "layout":"top","type":"error"});
+                // 响应错误回调
+            });
+        },
+        share_load: function(holiday_id) {
             var vm = this;
             var res;
             vm.gridData.forEach(function(item) {
-                if (item.worker_id == worker_id) {
+                if (item.holiday_id == holiday_id) {
                     res = deepCopy(item);
                     return;
                 }
             });
             return res;
-        },
-        get_degree_info: function() {
-            this.$http.get('http://104.160.33.183:5000/admin/degree_infos/').then((response) => {
-                    this.degree = response.data.degree_infos;
-              }, (response) => {
-                    console.log(response);
-                    noty({"text": response.data.message, "layout":"top","type":"error"});
-                // 响应错误回调
-            });
-        },
-        get_deparment_info: function() {
-            this.$http.get('http://104.160.33.183:5000/admin/department_infos/').then((response) => {
-                    this.department = response.data.department_infos;
-              }, (response) => {
-                    console.log(response);
-                    noty({"text": response.data.message, "layout":"top","type":"error"});
-                // 响应错误回调
-            });
-        },
-        manage_degree: function(worker_id) {
-            this.item = this.share_load(worker_id);
-            this.degree_department_id = -1;
-            this.degree_department_id = 1;
-            this.degree_degree_id = this.get_degree(1);
-            $('#degree_modal').modal('show');
-        },
-        save_degree: function() {
-            console.log(this.degree_department_id);
-            console.log(this.degree_degree_id);
-            if(this.get_degree(this.degree_department_id) == 0){
-                var target_url = this.apiUrl + this.item.worker_id + '/degree/';
-                var put_data = {'degree_department_id': this.degree_department_id.toString(), 
-                                  'degree_degree_id': this.degree_degree_id.toString()};
-                this.$http.post(target_url, put_data).then((response) => {
-                    // 响应成功回调
-                    noty({"text":"Operation successfully!","layout":"top","type":"information"});
-                    this.get_workers();
-                    return;
-                  }, (response) => {
-                        console.log(response);
-                        noty({"text": response.data.message, "layout":"top","type":"error"});
-                    // 响应错误回调
-                });
-            }
-            else{
-                if(this.degree_degree_id == 0){
-                    var target_url = this.apiUrl + this.item.worker_id + '/degree/' + this.degree_department_id;
-                    var put_data = {"degree_department_id" : this.degree_department_id.toString()};
-                    console.log(put_data)
-                    console.log(JSON.stringify(put_data))
-                    this.$http.delete(target_url).then((response) => {
-                        // 响应成功回调
-                        noty({"text":"Operation successfully!","layout":"top","type":"information"});
-                        this.get_workers();
-                        return;
-                      }, (response) => {
-                            console.log(response);
-                            noty({"text": response.data.message, "layout":"top","type":"error"});
-                        // 响应错误回调
-                    });
-                }
-                else {
-                    var target_url = this.apiUrl + this.item.worker_id + '/department/' + this.degree_department_id + '/';
-                    var put_data = {'worker_degree_degree': this.degree_degree_id.toString()};
-                    this.$http.put(target_url, put_data).then((response) => {
-                        // 响应成功回调
-                        noty({"text":"Operation successfully!","layout":"top","type":"information"});
-                        this.get_workers();
-                        return;
-                      }, (response) => {
-                            console.log(response);
-                            noty({"text": response.data.message, "layout":"top","type":"error"});
-                        // 响应错误回调
-                    });
-                }
-            }
-        },
-        get_degree: function(val) {
-            for(v in this.item.worker_degree){
-              if((this.item.worker_degree)[v].degree_department_id == val) {
-                  return (admin_user.item.worker_degree)[v].degree_degree_id;
-              }
-          }
-          return 0;
         }
     },
     watch: {
       per_page: function(val) {
-          this.get_workers();
+        this.get_holidays();
       },
       currentPage: function(val) {
-          this.get_workers();
+        this.get_holidays();
       },
-      degree_department_id: function(d_val) {
-          $("#degree_select").val(this.get_degree(d_val));
-      }
+      item:{
+            handler: function (val, oldVal) { 
+                if(val.holiday_type == 2){       
+                    $(".form_datetime").datetimepicker('remove');        
+                    $(".form_datetime").datetimepicker({minView: "month",  
+                            format: 'yyyy-mm-dd'});
+                }
+                else{
+                    $(".form_datetime").datetimepicker('remove');        
+                    $(".form_datetime").datetimepicker({ format: 'yyyy-mm-dd hh:ii:ss'});
+                }
+             },
+            deep: true
+        }
     }
 });
 
 
- 
-
-// var DT = $('#demo').DataTable();
-// $("#dt tbody").on("click","tr",function(){
-//      alert( 'HERE' );
-// })
 var t =  [
     {
       "holiday_app_end": false, 
@@ -222,7 +164,7 @@ var t =  [
       "holiday_apply_state": 0, 
       "holiday_apply_time": "2016-12-17 00:00:00", 
       "holiday_end_time": null, 
-      "worker_id": 1, 
+      "holiday_id": 1, 
       "holiday_reason": "TEST", 
       "holiday_time_begin": "2016-12-17 10:50:49", 
       "holiday_time_end": "2016-12-18 22:30:49", 
@@ -236,7 +178,7 @@ var t =  [
       "holiday_apply_state": 0, 
       "holiday_apply_time": "2016-12-17 00:00:00", 
       "holiday_end_time": null, 
-      "worker_id": 2, 
+      "holiday_id": 2, 
       "holiday_reason": "test2", 
       "holiday_time_begin": "2016-12-18 00:20:14", 
       "holiday_time_end": "2016-12-23 05:25:14", 
@@ -250,7 +192,7 @@ var t =  [
       "holiday_apply_state": 0, 
       "holiday_apply_time": "2016-12-17 00:00:00", 
       "holiday_end_time": null, 
-      "worker_id": 1, 
+      "holiday_id": 1, 
       "holiday_reason": "TEST", 
       "holiday_time_begin": "2016-12-17 10:50:49", 
       "holiday_time_end": "2016-12-18 22:30:49", 
@@ -264,7 +206,7 @@ var t =  [
       "holiday_apply_state": 0, 
       "holiday_apply_time": "2016-12-17 00:00:00", 
       "holiday_end_time": null, 
-      "worker_id": 2, 
+      "holiday_id": 2, 
       "holiday_reason": "test2", 
       "holiday_time_begin": "2016-12-18 00:20:14", 
       "holiday_time_end": "2016-12-23 05:25:14", 
@@ -278,7 +220,7 @@ var t =  [
       "holiday_apply_state": 0, 
       "holiday_apply_time": "2016-12-17 00:00:00", 
       "holiday_end_time": null, 
-      "worker_id": 1, 
+      "holiday_id": 1, 
       "holiday_reason": "TEST", 
       "holiday_time_begin": "2016-12-17 10:50:49", 
       "holiday_time_end": "2016-12-18 22:30:49", 
@@ -292,7 +234,7 @@ var t =  [
       "holiday_apply_state": 0, 
       "holiday_apply_time": "2016-12-17 00:00:00", 
       "holiday_end_time": null, 
-      "worker_id": 2, 
+      "holiday_id": 2, 
       "holiday_reason": "test2", 
       "holiday_time_begin": "2016-12-18 00:20:14", 
       "holiday_time_end": "2016-12-23 05:25:14", 
@@ -305,7 +247,7 @@ var t =  [
       "holiday_apply_state": 0, 
       "holiday_apply_time": "2016-12-17 00:00:00", 
       "holiday_end_time": null, 
-      "worker_id": 1, 
+      "holiday_id": 1, 
       "holiday_reason": "TEST", 
       "holiday_time_begin": "2016-12-17 10:50:49", 
       "holiday_time_end": "2016-12-18 22:30:49", 
@@ -319,7 +261,7 @@ var t =  [
       "holiday_apply_state": 0, 
       "holiday_apply_time": "2016-12-17 00:00:00", 
       "holiday_end_time": null, 
-      "worker_id": 2, 
+      "holiday_id": 2, 
       "holiday_reason": "test2", 
       "holiday_time_begin": "2016-12-18 00:20:14", 
       "holiday_time_end": "2016-12-23 05:25:14", 
@@ -332,7 +274,7 @@ var t =  [
       "holiday_apply_state": 0, 
       "holiday_apply_time": "2016-12-17 00:00:00", 
       "holiday_end_time": null, 
-      "worker_id": 1, 
+      "holiday_id": 1, 
       "holiday_reason": "TESTtttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttTESTtttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttTESTtttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttTESTttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt", 
       "holiday_time_begin": "2016-12-17 10:50:49", 
       "holiday_time_end": "2016-12-18 22:30:49", 
@@ -346,7 +288,7 @@ var t =  [
       "holiday_apply_state": 0, 
       "holiday_apply_time": "2016-12-17 00:00:00", 
       "holiday_end_time": null, 
-      "worker_id": 2, 
+      "holiday_id": 2, 
       "holiday_reason": "test2", 
       "holiday_time_begin": "2016-12-18 00:20:14", 
       "holiday_time_end": "2016-12-23 05:25:14", 
@@ -359,7 +301,7 @@ var t =  [
       "holiday_apply_state": 0, 
       "holiday_apply_time": "2016-12-17 00:00:00", 
       "holiday_end_time": null, 
-      "worker_id": 1, 
+      "holiday_id": 1, 
       "holiday_reason": "TEST", 
       "holiday_time_begin": "2016-12-17 10:50:49", 
       "holiday_time_end": "2016-12-18 22:30:49", 
@@ -373,7 +315,7 @@ var t =  [
       "holiday_apply_state": 0, 
       "holiday_apply_time": "2016-12-17 00:00:00", 
       "holiday_end_time": null, 
-      "worker_id": 2, 
+      "holiday_id": 2, 
       "holiday_reason": "test2", 
       "holiday_time_begin": "2016-12-18 00:20:14", 
       "holiday_time_end": "2016-12-23 05:25:14", 
@@ -386,7 +328,7 @@ var t =  [
       "holiday_apply_state": 0, 
       "holiday_apply_time": "2016-12-17 00:00:00", 
       "holiday_end_time": null, 
-      "worker_id": 1, 
+      "holiday_id": 1, 
       "holiday_reason": "TEST", 
       "holiday_time_begin": "2016-12-17 10:50:49", 
       "holiday_time_end": "2016-12-18 22:30:49", 
@@ -400,7 +342,7 @@ var t =  [
       "holiday_apply_state": 0, 
       "holiday_apply_time": "2016-12-17 00:00:00", 
       "holiday_end_time": null, 
-      "worker_id": 2, 
+      "holiday_id": 2, 
       "holiday_reason": "test2", 
       "holiday_time_begin": "2016-12-18 00:20:14", 
       "holiday_time_end": "2016-12-23 05:25:14", 
@@ -413,7 +355,7 @@ var t =  [
       "holiday_apply_state": 0, 
       "holiday_apply_time": "2016-12-17 00:00:00", 
       "holiday_end_time": null, 
-      "worker_id": 1, 
+      "holiday_id": 1, 
       "holiday_reason": "TEST", 
       "holiday_time_begin": "2016-12-17 10:50:49", 
       "holiday_time_end": "2016-12-18 22:30:49", 
@@ -427,7 +369,7 @@ var t =  [
       "holiday_apply_state": 0, 
       "holiday_apply_time": "2016-12-17 00:00:00", 
       "holiday_end_time": null, 
-      "worker_id": 2, 
+      "holiday_id": 2, 
       "holiday_reason": "test2", 
       "holiday_time_begin": "2016-12-18 00:20:14", 
       "holiday_time_end": "2016-12-23 05:25:14", 
@@ -440,7 +382,7 @@ var t =  [
       "holiday_apply_state": 0, 
       "holiday_apply_time": "2016-12-17 00:00:00", 
       "holiday_end_time": null, 
-      "worker_id": 1, 
+      "holiday_id": 1, 
       "holiday_reason": "TEST", 
       "holiday_time_begin": "2016-12-17 10:50:49", 
       "holiday_time_end": "2016-12-18 22:30:49", 
@@ -454,7 +396,7 @@ var t =  [
       "holiday_apply_state": 0, 
       "holiday_apply_time": "2016-12-17 00:00:00", 
       "holiday_end_time": null, 
-      "worker_id": 2, 
+      "holiday_id": 2, 
       "holiday_reason": "test2", 
       "holiday_time_begin": "2016-12-18 00:20:14", 
       "holiday_time_end": "2016-12-23 05:25:14", 
@@ -467,7 +409,7 @@ var t =  [
       "holiday_apply_state": 0, 
       "holiday_apply_time": "2016-12-17 00:00:00", 
       "holiday_end_time": null, 
-      "worker_id": 1, 
+      "holiday_id": 1, 
       "holiday_reason": "TEST", 
       "holiday_time_begin": "2016-12-17 10:50:49", 
       "holiday_time_end": "2016-12-18 22:30:49", 
@@ -481,7 +423,7 @@ var t =  [
       "holiday_apply_state": 0, 
       "holiday_apply_time": "2016-12-17 00:00:00", 
       "holiday_end_time": null, 
-      "worker_id": 2, 
+      "holiday_id": 2, 
       "holiday_reason": "test2", 
       "holiday_time_begin": "2016-12-18 00:20:14", 
       "holiday_time_end": "2016-12-23 05:25:14", 
@@ -494,7 +436,7 @@ var t =  [
       "holiday_apply_state": 0, 
       "holiday_apply_time": "2016-12-17 00:00:00", 
       "holiday_end_time": null, 
-      "worker_id": 1, 
+      "holiday_id": 1, 
       "holiday_reason": "TEST", 
       "holiday_time_begin": "2016-12-17 10:50:49", 
       "holiday_time_end": "2016-12-18 22:30:49", 
@@ -508,8 +450,8 @@ var t =  [
       "holiday_apply_state": 0, 
       "holiday_apply_time": "2016-12-17 00:00:00", 
       "holiday_end_time": null, 
-      "worker_id": 2, 
-      "holiday_reason": "test2", 
+      "holiday_id": 2, 
+      "holiday_reason": "test22222222222222222222222222222222222222222222222222", 
       "holiday_time_begin": "2016-12-18 00:20:14", 
       "holiday_time_end": "2016-12-23 05:25:14", 
       "holiday_type": 2, 
@@ -521,7 +463,7 @@ var t =  [
       "holiday_apply_state": 0, 
       "holiday_apply_time": "2016-12-17 00:00:00", 
       "holiday_end_time": null, 
-      "worker_id": 1, 
+      "holiday_id": 1, 
       "holiday_reason": "TEST", 
       "holiday_time_begin": "2016-12-17 10:50:49", 
       "holiday_time_end": "2016-12-18 22:30:49", 
@@ -535,7 +477,7 @@ var t =  [
       "holiday_apply_state": 0, 
       "holiday_apply_time": "2016-12-17 00:00:00", 
       "holiday_end_time": null, 
-      "worker_id": 2, 
+      "holiday_id": 2, 
       "holiday_reason": "test2", 
       "holiday_time_begin": "2016-12-18 00:20:14", 
       "holiday_time_end": "2016-12-23 05:25:14", 
@@ -548,7 +490,7 @@ var t =  [
       "holiday_apply_state": 0, 
       "holiday_apply_time": "2016-12-17 00:00:00", 
       "holiday_end_time": null, 
-      "worker_id": 1, 
+      "holiday_id": 1, 
       "holiday_reason": "TEST", 
       "holiday_time_begin": "2016-12-17 10:50:49", 
       "holiday_time_end": "2016-12-18 22:30:49", 
@@ -562,7 +504,7 @@ var t =  [
       "holiday_apply_state": 0, 
       "holiday_apply_time": "2016-12-17 00:00:00", 
       "holiday_end_time": null, 
-      "worker_id": 2, 
+      "holiday_id": 2, 
       "holiday_reason": "test2", 
       "holiday_time_begin": "2016-12-18 00:20:14", 
       "holiday_time_end": "2016-12-23 05:25:14", 
@@ -575,7 +517,7 @@ var t =  [
       "holiday_apply_state": 0, 
       "holiday_apply_time": "2016-12-17 00:00:00", 
       "holiday_end_time": null, 
-      "worker_id": 1, 
+      "holiday_id": 1, 
       "holiday_reason": "TEST", 
       "holiday_time_begin": "2016-12-17 10:50:49", 
       "holiday_time_end": "2016-12-18 22:30:49", 
@@ -589,7 +531,7 @@ var t =  [
       "holiday_apply_state": 0, 
       "holiday_apply_time": "2016-12-17 00:00:00", 
       "holiday_end_time": null, 
-      "worker_id": 2, 
+      "holiday_id": 2, 
       "holiday_reason": "test2", 
       "holiday_time_begin": "2016-12-18 00:20:14", 
       "holiday_time_end": "2016-12-23 05:25:14", 
@@ -602,7 +544,7 @@ var t =  [
       "holiday_apply_state": 0, 
       "holiday_apply_time": "2016-12-17 00:00:00", 
       "holiday_end_time": null, 
-      "worker_id": 1, 
+      "holiday_id": 1, 
       "holiday_reason": "TEST", 
       "holiday_time_begin": "2016-12-17 10:50:49", 
       "holiday_time_end": "2016-12-18 22:30:49", 
@@ -616,7 +558,7 @@ var t =  [
       "holiday_apply_state": 0, 
       "holiday_apply_time": "2016-12-17 00:00:00", 
       "holiday_end_time": null, 
-      "worker_id": 2, 
+      "holiday_id": 2, 
       "holiday_reason": "test2", 
       "holiday_time_begin": "2016-12-18 00:20:14", 
       "holiday_time_end": "2016-12-23 05:25:14", 
@@ -629,7 +571,7 @@ var t =  [
       "holiday_apply_state": 0, 
       "holiday_apply_time": "2016-12-17 00:00:00", 
       "holiday_end_time": null, 
-      "worker_id": 1, 
+      "holiday_id": 1, 
       "holiday_reason": "TEST", 
       "holiday_time_begin": "2016-12-17 10:50:49", 
       "holiday_time_end": "2016-12-18 22:30:49", 
@@ -643,7 +585,7 @@ var t =  [
       "holiday_apply_state": 0, 
       "holiday_apply_time": "2016-12-17 00:00:00", 
       "holiday_end_time": null, 
-      "worker_id": 2, 
+      "holiday_id": 2, 
       "holiday_reason": "test2", 
       "holiday_time_begin": "2016-12-18 00:20:14", 
       "holiday_time_end": "2016-12-23 05:25:14", 

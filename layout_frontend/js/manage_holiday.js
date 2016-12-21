@@ -6,6 +6,8 @@ var holidays_info = new Vue({
         gridColumns: [{
             name: '编号'
         }, {
+            name: '工号'
+        },{
             name: '开始时间'
         }, {
             name: '结束时间'
